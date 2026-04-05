@@ -425,7 +425,6 @@
 </head>
 <body>
 
-  <!-- LOGIN -->
   <div id="loginOverlay" class="login-overlay">
     <div class="login-card">
       <img src="logo.png" alt="Ramen & Fuego">
@@ -492,8 +491,9 @@
           <label>Dirección</label>
           <input id="clienteDireccion" placeholder="Ej: Los Aromos 123">
 
-          <label>Comuna</label>
+          <label>Comuna / modalidad</label>
           <select id="clienteComuna" onchange="updateSummary()">
+            <option value="0">Retiro en local (sin costo)</option>
             <option value="1000">El Rincón / La Punta / Los Marcos</option>
             <option value="2500">Codegua</option>
             <option value="4000">Graneros / San Francisco / Mostazal</option>
@@ -506,6 +506,8 @@
           <select id="medioPago">
             <option>Transferencia</option>
             <option>Efectivo</option>
+            <option>Débito</option>
+            <option>Crédito</option>
           </select>
 
           <label>Observaciones</label>
@@ -722,12 +724,13 @@
 
   <script>
     const STORAGE_KEYS = {
-      stock: 'ryf_stock_v3',
-      prices: 'ryf_prices_v3',
-      sales: 'ryf_sales_v3',
-      folio: 'ryf_folio_v3',
-      sessionUser: 'ryf_session_user_v3',
-      lastOrder: 'ryf_last_order_v3'
+      stock: 'ryf_stock_v4',
+      prices: 'ryf_prices_v4',
+      sales: 'ryf_sales_v4',
+      folio: 'ryf_folio_v4',
+      sessionUser: 'ryf_session_user_v4',
+      lastOrder: 'ryf_last_order_v4',
+      draft: 'ryf_draft_v1'
     };
 
     const USERS = {
@@ -765,6 +768,7 @@
     function init(){
       fillSettings();
       updatePriceViews();
+      loadDraft();
       updateSummary();
       renderHistory();
       restoreSession();
@@ -802,6 +806,7 @@
       document.getElementById('loginOverlay').classList.add('hidden');
       document.getElementById('loginPassword').value = '';
       error.textContent = '';
+      autoSaveDraft();
     }
 
     function loadJSON(key, fallback){
@@ -815,6 +820,32 @@
 
     function saveJSON(key, value){
       localStorage.setItem(key, JSON.stringify(value));
+    }
+
+    function autoSaveDraft(){
+      const draft = {
+        cliente: document.getElementById('clienteNombre').value,
+        direccion: document.getElementById('clienteDireccion').value,
+        comuna: document.getElementById('clienteComuna').value,
+        medioPago: document.getElementById('medioPago').value,
+        observaciones: document.getElementById('observaciones').value,
+        promoDelivery: document.getElementById('promoDelivery').checked,
+        items: currentOrder
+      };
+      saveJSON(STORAGE_KEYS.draft, draft);
+    }
+
+    function loadDraft(){
+      const draft = loadJSON(STORAGE_KEYS.draft, null);
+      if(!draft) return;
+
+      document.getElementById('clienteNombre').value = draft.cliente || '';
+      document.getElementById('clienteDireccion').value = draft.direccion || '';
+      document.getElementById('clienteComuna').value = draft.comuna || '0';
+      document.getElementById('medioPago').value = draft.medioPago || 'Transferencia';
+      document.getElementById('observaciones').value = draft.observaciones || '';
+      document.getElementById('promoDelivery').checked = !!draft.promoDelivery;
+      currentOrder = draft.items || [];
     }
 
     function showSection(id, btn){
@@ -977,6 +1008,7 @@
       const promo = document.getElementById('promoDelivery').checked;
       const subtotal = getSubtotal();
       const delivery = getDelivery();
+      if(delivery === 0) return 0;
       if(promo && subtotal >= 20000) return Math.round(delivery * 0.5);
       return 0;
     }
@@ -992,6 +1024,7 @@
 
     function limpiarPedido(){
       currentOrder = [];
+      autoSaveDraft();
       updateSummary();
     }
 
@@ -1015,12 +1048,18 @@
       }
 
       document.getElementById('subtotalTxt').textContent = '$' + formatCLP(getSubtotal());
-      document.getElementById('deliveryTxt').textContent = '$' + formatCLP(getDelivery());
+
+      const deliveryValue = getDelivery();
+      document.getElementById('deliveryTxt').textContent =
+        deliveryValue === 0 ? 'Retiro' : '$' + formatCLP(deliveryValue);
+
       document.getElementById('descuentoTxt').textContent = '-$' + formatCLP(getDiscount());
       document.getElementById('totalTxt').textContent = '$' + formatCLP(getTotal());
 
       document.getElementById('stockPolloTxt').innerHTML = stockBadge(getRemainingStock('pollo'));
       document.getElementById('stockCerdoTxt').innerHTML = stockBadge(getRemainingStock('cerdo'));
+
+      autoSaveDraft();
     }
 
     function stockBadge(value){
@@ -1099,6 +1138,7 @@
       document.getElementById('clienteDireccion').value = '';
       document.getElementById('observaciones').value = '';
       document.getElementById('promoDelivery').checked = false;
+      localStorage.removeItem(STORAGE_KEYS.draft);
 
       updateSummary();
       renderHistory();
@@ -1188,12 +1228,12 @@
         } catch {}
       }
 
-      doc.setFontSize(10);
+      doc.setFontSize(11);
       doc.setFont(undefined, 'bold');
       doc.text('RAMEN & FUEGO', 29, y, { align: 'center' });
       y += 5;
 
-      doc.setFontSize(8);
+      doc.setFontSize(9);
       doc.text(copyLabel, 29, y, { align: 'center' });
       y += 4;
 
@@ -1201,7 +1241,7 @@
       y += 4;
 
       doc.setFont(undefined, 'normal');
-      doc.setFontSize(7);
+      doc.setFontSize(8.5);
 
       const info = [
         `Folio: ${order.folio}`,
@@ -1220,7 +1260,7 @@
       info.forEach(line => {
         const lines = doc.splitTextToSize(line, 54);
         doc.text(lines, 2, y);
-        y += lines.length * 3.2;
+        y += lines.length * 3.8;
       });
 
       y += 2;
@@ -1238,7 +1278,7 @@
         doc.text(lines, 2, y);
         doc.text(`$${formatCLP(item.price)}`, 56, y, { align: 'right' });
 
-        y += lines.length * 3.5;
+        y += lines.length * 3.8;
         y += 1;
       });
 
@@ -1248,40 +1288,29 @@
 
       doc.text('Subtotal', 2, y);
       doc.text(`$${formatCLP(order.subtotal)}`, 56, y, { align: 'right' });
-      y += 4;
+      y += 4.5;
 
-      doc.text('Delivery', 2, y);
-      doc.text(`$${formatCLP(order.delivery)}`, 56, y, { align: 'right' });
-      y += 4;
+      doc.text(order.delivery === 0 ? 'Retiro' : 'Delivery', 2, y);
+      doc.text(order.delivery === 0 ? '$0' : `$${formatCLP(order.delivery)}`, 56, y, { align: 'right' });
+      y += 4.5;
 
       doc.text('Desc.', 2, y);
       doc.text(`-$${formatCLP(order.descuento)}`, 56, y, { align: 'right' });
-      y += 5;
+      y += 5.5;
 
       doc.setFont(undefined, 'bold');
-      doc.setFontSize(9);
+      doc.setFontSize(10.5);
 
       doc.text('TOTAL', 2, y);
       doc.text(`$${formatCLP(order.total)}`, 56, y, { align: 'right' });
       y += 6;
 
-      if (includeInternal) {
-        const costo = estimateInternalCost(order);
-        const margen = order.total - costo;
-
-        doc.setFont(undefined, 'normal');
-        doc.setFontSize(7);
-        doc.text(`Costo: $${formatCLP(costo)}`, 2, y);
-        y += 4;
-        doc.text(`Margen: $${formatCLP(margen)}`, 2, y);
-        y += 4;
-      }
-
       doc.line(2, y, 56, y);
-      y += 5;
+      y += 6;
 
-      doc.setFontSize(7);
-      doc.text('Gracias por tu compra 🔥', 29, y, { align: 'center' });
+      doc.setFontSize(9);
+      doc.setFont(undefined, 'bold');
+      doc.text('Gracias por tu compra', 29, y, { align: 'center' });
 
       return doc.output('blob');
     }
