@@ -1,1210 +1,194 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Ramen & Fuego</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ramen & Fuego</title>
 
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 
-  <style>
-    :root{
-      --bg:#0f0b09;
-      --bg2:#1a120d;
-      --panel:rgba(24,17,13,.96);
-      --panel-soft:rgba(35,25,18,.95);
-      --line:rgba(255,255,255,.08);
-      --text:#fff5eb;
-      --muted:#d7c6b6;
-      --accent:#ff6a00;
-      --accent2:#ffb347;
-      --accent3:#ff2d00;
-      --ok:#2ecc71;
-      --danger:#ff4d4f;
-      --shadow:0 10px 30px rgba(0,0,0,.35);
-    }
-
-    *{box-sizing:border-box}
-
-    body{
-      margin:0;
-      font-family:Arial, Helvetica, sans-serif;
-      color:var(--text);
-      background:
-        radial-gradient(circle at top right, rgba(255,106,0,.15), transparent 25%),
-        radial-gradient(circle at bottom left, rgba(255,45,0,.12), transparent 20%),
-        linear-gradient(180deg, var(--bg), var(--bg2));
-      min-height:100vh;
-    }
-
-    header{
-      position:sticky;
-      top:0;
-      z-index:50;
-      backdrop-filter: blur(8px);
-      background:rgba(10,8,7,.82);
-      border-bottom:1px solid var(--line);
-    }
-
-    .header-inner{
-      max-width:1200px;
-      margin:0 auto;
-      padding:14px;
-      display:flex;
-      align-items:center;
-      gap:14px;
-      justify-content:space-between;
-      flex-wrap:wrap;
-    }
-
-    .brand{
-      display:flex;
-      align-items:center;
-      gap:12px;
-    }
-
-    .brand img{
-      width:58px;
-      height:58px;
-      object-fit:contain;
-      border-radius:12px;
-      background:rgba(255,255,255,.03);
-      padding:4px;
-      border:1px solid var(--line);
-    }
-
-    .brand h1{
-      margin:0;
-      font-size:1.5rem;
-      line-height:1.1;
-      color:#fff;
-    }
-
-    .brand small{
-      display:block;
-      color:var(--accent2);
-      margin-top:2px;
-      font-weight:bold;
-      letter-spacing:.3px;
-    }
-
-    .tabs{
-      display:flex;
-      gap:8px;
-      flex-wrap:wrap;
-    }
-
-    .tabs button{
-      border:none;
-      padding:10px 14px;
-      border-radius:999px;
-      background:#241a14;
-      color:var(--text);
-      cursor:pointer;
-      font-weight:bold;
-      border:1px solid var(--line);
-      transition:.2s ease;
-    }
-
-    .tabs button.active,
-    .tabs button:hover{
-      background:linear-gradient(90deg, var(--accent), var(--accent3));
-      color:#fff;
-      transform:translateY(-1px);
-    }
-
-    .container{
-      max-width:1200px;
-      margin:0 auto;
-      padding:16px;
-    }
-
-    .section{
-      display:none;
-    }
-
-    .section.active{
-      display:block;
-    }
-
-    .hero{
-      background:
-        linear-gradient(135deg, rgba(255,106,0,.18), rgba(255,45,0,.08)),
-        var(--panel);
-      border:1px solid var(--line);
-      border-radius:22px;
-      padding:18px;
-      box-shadow:var(--shadow);
-      margin-bottom:16px;
-    }
-
-    .hero h2{
-      margin:0 0 8px 0;
-      font-size:1.4rem;
-    }
-
-    .hero p{
-      margin:0;
-      color:var(--muted);
-    }
-
-    .grid{
-      display:grid;
-      grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
-      gap:16px;
-    }
-
-    .card{
-      background:var(--panel);
-      border:1px solid var(--line);
-      border-radius:18px;
-      padding:16px;
-      box-shadow:var(--shadow);
-    }
-
-    .card.soft{
-      background:var(--panel-soft);
-    }
-
-    .card h3,
-    .card h4{
-      margin-top:0;
-      margin-bottom:10px;
-      color:#fff;
-    }
-
-    label{
-      display:block;
-      margin:10px 0 6px;
-      color:var(--muted);
-      font-size:14px;
-      text-align:left;
-    }
-
-    input, select, textarea{
-      width:100%;
-      border-radius:12px;
-      border:1px solid #3f2d22;
-      background:#120d0a;
-      color:#fff;
-      padding:11px 12px;
-      outline:none;
-    }
-
-    input:focus, select:focus, textarea:focus{
-      border-color:var(--accent);
-      box-shadow:0 0 0 2px rgba(255,106,0,.15);
-    }
-
-    textarea{
-      min-height:90px;
-      resize:vertical;
-    }
-
-    .product-box{
-      background:#16100c;
-      border:1px solid #3a291f;
-      border-radius:16px;
-      padding:14px;
-    }
-
-    .product-box .price{
-      color:var(--accent2);
-      font-weight:bold;
-      margin-bottom:10px;
-      display:block;
-    }
-
-    .actions{
-      display:flex;
-      gap:10px;
-      flex-wrap:wrap;
-      margin-top:12px;
-    }
-
-    button.btn{
-      border:none;
-      padding:11px 14px;
-      border-radius:12px;
-      cursor:pointer;
-      font-weight:bold;
-      transition:.2s ease;
-    }
-
-    .btn-primary{
-      background:linear-gradient(90deg,var(--accent),var(--accent3));
-      color:#fff;
-    }
-
-    .btn-secondary{
-      background:#2a1f19;
-      color:#fff;
-      border:1px solid #413028;
-    }
-
-    .btn-ok{
-      background:var(--ok);
-      color:#fff;
-    }
-
-    .btn-danger{
-      background:var(--danger);
-      color:#fff;
-    }
-
-    button.btn:hover{
-      transform:translateY(-1px);
-      opacity:.96;
-    }
-
-    .summary{
-      background:linear-gradient(180deg, rgba(255,106,0,.08), rgba(255,255,255,.01));
-    }
-
-    .summary-list{
-      margin:0;
-      padding-left:18px;
-    }
-
-    .summary-list li{
-      margin-bottom:8px;
-    }
-
-    .line{
-      display:flex;
-      justify-content:space-between;
-      gap:12px;
-      padding:7px 0;
-      border-bottom:1px dashed rgba(255,255,255,.08);
-      color:var(--muted);
-    }
-
-    .line strong{
-      color:#fff;
-    }
-
-    .line.total{
-      font-size:1.2rem;
-      font-weight:bold;
-      color:#fff;
-      border-bottom:none;
-      margin-top:8px;
-    }
-
-    .badge{
-      display:inline-block;
-      padding:5px 10px;
-      border-radius:999px;
-      font-size:12px;
-      font-weight:bold;
-    }
-
-    .badge.ok{ background:rgba(46,204,113,.15); color:#85f5b3; }
-    .badge.warn{ background:rgba(255,179,71,.15); color:#ffcf85; }
-    .badge.out{ background:rgba(255,77,79,.14); color:#ff9a9b; }
-
-    table{
-      width:100%;
-      border-collapse:collapse;
-      margin-top:10px;
-      overflow:hidden;
-      border-radius:14px;
-    }
-
-    th, td{
-      border:1px solid rgba(255,255,255,.06);
-      padding:10px;
-      font-size:14px;
-      text-align:left;
-    }
-
-    th{
-      background:#221812;
-      color:var(--accent2);
-    }
-
-    td{
-      background:#140f0c;
-    }
-
-    .muted{
-      color:var(--muted);
-      font-size:14px;
-    }
-
-    .center{
-      text-align:center;
-    }
-
-    .spacer{
-      height:10px;
-    }
-
-    @media (max-width:700px){
-      .brand h1{ font-size:1.2rem; }
-      .tabs{ width:100%; }
-      .tabs button{ flex:1; }
-    }
-  </style>
+<style>
+body{margin:0;font-family:Arial;background:#111;color:#fff}
+.container{padding:20px}
+button{padding:10px;border:none;border-radius:6px;cursor:pointer}
+</style>
 </head>
+
 <body>
-  <header>
-    <div class="header-inner">
-      <div class="brand">
-        <img src="logo.png" alt="Ramen & Fuego">
-        <div>
-          <h1>Ramen & Fuego</h1>
-          <small>¡Sabor que prende!</small>
-        </div>
-      </div>
-
-      <div class="tabs">
-        <button class="active" onclick="showSection('pedidos', this)">Pedidos</button>
-        <button onclick="showSection('stock', this)">Stock</button>
-        <button onclick="showSection('precios', this)">Precios</button>
-        <button onclick="showSection('historial', this)">Historial</button>
-        <button onclick="showSection('cierre', this)">Cierre</button>
-      </div>
-    </div>
-  </header>
-
-  <div class="container">
-
-    <section id="pedidos" class="section active">
-      <div class="hero">
-        <h2>Panel de pedidos</h2>
-        <p>Arma el pedido, calcula delivery, aplica promo y genera los dos tickets con impresión.</p>
-      </div>
-
-      <div class="grid">
-        <div class="card">
-          <h3>Datos del cliente</h3>
-
-          <label>Nombre del cliente</label>
-          <input id="clienteNombre" placeholder="Ej: Juan Pérez">
-
-          <label>Dirección</label>
-          <input id="clienteDireccion" placeholder="Ej: Los Aromos 123">
-
-          <label>Comuna</label>
-          <select id="clienteComuna" onchange="updateSummary()">
-            <option value="1000">El Rincón / La Punta / Los Marcos</option>
-            <option value="2500">Codegua</option>
-            <option value="4000">Graneros / San Francisco / Mostazal</option>
-          </select>
-
-          <label>Atendido por</label>
-          <select id="atendidoPor">
-            <option>Exequiel</option>
-            <option>Ana María</option>
-            <option>Angelo</option>
-          </select>
-
-          <label>Medio de pago</label>
-          <select id="medioPago">
-            <option>Transferencia</option>
-            <option>Efectivo</option>
-          </select>
-
-          <label>Observaciones</label>
-          <textarea id="observaciones" placeholder="Ej: con picante, sin cebollín..."></textarea>
-
-          <div class="actions">
-            <label style="display:flex; align-items:center; gap:8px; margin:0;">
-              <input type="checkbox" id="promoDelivery" style="width:auto;" onchange="updateSummary()">
-              <span>Activar promo delivery 50% sobre $20.000</span>
-            </label>
-          </div>
-        </div>
-
-        <div class="card summary">
-          <h3>Resumen del pedido</h3>
-          <ul id="pedidoLista" class="summary-list"></ul>
-
-          <div class="line"><span>Stock pollo restante</span><strong id="stockPolloTxt"></strong></div>
-          <div class="line"><span>Stock cerdo restante</span><strong id="stockCerdoTxt"></strong></div>
-          <div class="line"><span>Subtotal</span><strong id="subtotalTxt">$0</strong></div>
-          <div class="line"><span>Delivery</span><strong id="deliveryTxt">$0</strong></div>
-          <div class="line"><span>Descuento delivery</span><strong id="descuentoTxt">-$0</strong></div>
-          <div class="line total"><span>Total</span><span id="totalTxt">$0</span></div>
-
-          <div class="actions">
-            <button class="btn btn-primary" onclick="finalizarPedido()">Finalizar pedido</button>
-            <button class="btn btn-secondary" onclick="limpiarPedido()">Limpiar pedido</button>
-          </div>
-        </div>
-      </div>
-
-      <div class="spacer"></div>
-
-      <div class="grid">
-        <div class="card soft product-box">
-          <h4>Ramen Pollo</h4>
-          <span class="price">$<span id="pricePolloView"></span></span>
-          <button class="btn btn-primary" onclick="addSimpleRamen('pollo')">Agregar</button>
-        </div>
-
-        <div class="card soft product-box">
-          <h4>Ramen Cerdo</h4>
-          <span class="price">$<span id="priceCerdoView"></span></span>
-          <button class="btn btn-primary" onclick="addSimpleRamen('cerdo')">Agregar</button>
-        </div>
-      </div>
-
-      <div class="spacer"></div>
-
-      <div class="grid">
-        <div class="card soft">
-          <h4>Combo Ramen + Bebida</h4>
-          <label>Tipo de ramen</label>
-          <select id="comboRB_ramen">
-            <option value="pollo">Pollo</option>
-            <option value="cerdo">Cerdo</option>
-          </select>
-
-          <label>Bebida</label>
-          <select id="comboRB_bebida">
-            <option>Coca-Cola</option>
-            <option>Fanta</option>
-            <option>Sprite</option>
-          </select>
-
-          <div class="muted">Precio: $<span id="priceComboRBView"></span></div>
-          <div class="actions">
-            <button class="btn btn-primary" onclick="addComboRB()">Agregar combo</button>
-          </div>
-        </div>
-
-        <div class="card soft">
-          <h4>Combo Ramen + Gyozas</h4>
-          <label>Tipo de ramen</label>
-          <select id="comboRG_ramen">
-            <option value="pollo">Pollo</option>
-            <option value="cerdo">Cerdo</option>
-          </select>
-
-          <label>Tipo de gyozas</label>
-          <select id="comboRG_gyoza">
-            <option>Pollo</option>
-            <option>Cerdo</option>
-            <option>Camarón</option>
-          </select>
-
-          <div class="muted">Precio: $<span id="priceComboRGView"></span></div>
-          <div class="actions">
-            <button class="btn btn-primary" onclick="addComboRG()">Agregar combo</button>
-          </div>
-        </div>
-
-        <div class="card soft">
-          <h4>Combo Ramen + Bebida + Gyozas</h4>
-          <label>Tipo de ramen</label>
-          <select id="comboFull_ramen">
-            <option value="pollo">Pollo</option>
-            <option value="cerdo">Cerdo</option>
-          </select>
-
-          <label>Bebida</label>
-          <select id="comboFull_bebida">
-            <option>Coca-Cola</option>
-            <option>Fanta</option>
-            <option>Sprite</option>
-          </select>
-
-          <label>Tipo de gyozas</label>
-          <select id="comboFull_gyoza">
-            <option>Pollo</option>
-            <option>Cerdo</option>
-            <option>Camarón</option>
-          </select>
-
-          <div class="muted">Precio: $<span id="priceComboFullView"></span></div>
-          <div class="actions">
-            <button class="btn btn-primary" onclick="addComboFull()">Agregar combo</button>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <section id="stock" class="section">
-      <div class="hero">
-        <h2>Control de stock</h2>
-        <p>Edita el stock disponible para pollo y cerdo. Si llega a 0, no permitirá vender.</p>
-      </div>
-
-      <div class="card">
-        <div class="grid">
-          <div>
-            <label>Stock ramen pollo</label>
-            <input id="stockPollo" type="number" min="0">
-          </div>
-          <div>
-            <label>Stock ramen cerdo</label>
-            <input id="stockCerdo" type="number" min="0">
-          </div>
-        </div>
-
-        <div class="actions">
-          <button class="btn btn-primary" onclick="saveStock()">Guardar stock</button>
-          <button class="btn btn-secondary" onclick="resetStock()">Restablecer a 15 / 15</button>
-        </div>
-      </div>
-    </section>
-
-    <section id="precios" class="section">
-      <div class="hero">
-        <h2>Configuración de precios</h2>
-        <p>Ajusta precios sin tocar el código. Ideal para subir o bajar valores rápido.</p>
-      </div>
-
-      <div class="card">
-        <div class="grid">
-          <div>
-            <label>Ramen Pollo</label>
-            <input id="precioPollo" type="number" min="0">
-          </div>
-          <div>
-            <label>Ramen Cerdo</label>
-            <input id="precioCerdo" type="number" min="0">
-          </div>
-          <div>
-            <label>Combo Ramen + Bebida</label>
-            <input id="precioComboRB" type="number" min="0">
-          </div>
-          <div>
-            <label>Combo Ramen + Gyozas</label>
-            <input id="precioComboRG" type="number" min="0">
-          </div>
-          <div>
-            <label>Combo Full</label>
-            <input id="precioComboFull" type="number" min="0">
-          </div>
-        </div>
-
-        <div class="actions">
-          <button class="btn btn-primary" onclick="savePrices()">Guardar precios</button>
-        </div>
-      </div>
-    </section>
-
-    <section id="historial" class="section">
-      <div class="hero">
-        <h2>Historial de ventas</h2>
-        <p>Revisa los pedidos guardados en este dispositivo.</p>
-      </div>
-
-      <div class="card">
-        <div id="historialContenido"></div>
-      </div>
-    </section>
-
-    <section id="cierre" class="section">
-      <div class="hero">
-        <h2>Cierre de día</h2>
-        <p>Obtén resumen de ventas y exporta el Excel con costo y margen estimado.</p>
-      </div>
-
-      <div class="card">
-        <div class="actions">
-          <button class="btn btn-primary" onclick="mostrarResumenCierre()">Ver resumen</button>
-          <button class="btn btn-ok" onclick="exportExcel()">Exportar Excel</button>
-        </div>
-
-        <div class="spacer"></div>
-        <div id="resumenCierre"></div>
-      </div>
-    </section>
-
-  </div>
-
-  <script>
-    const STORAGE_KEYS = {
-      stock: 'ryf_stock_v2',
-      prices: 'ryf_prices_v2',
-      sales: 'ryf_sales_v2',
-      folio: 'ryf_folio_v2'
-    };
-
-    const defaultStock = { pollo: 15, cerdo: 15 };
-    const defaultPrices = {
-      ramenPollo: 5000,
-      ramenCerdo: 5000,
-      comboRB: 6000,
-      comboRG: 7000,
-      comboFull: 8500
-    };
-
-    let stock = loadJSON(STORAGE_KEYS.stock, defaultStock);
-    let prices = loadJSON(STORAGE_KEYS.prices, defaultPrices);
-    let sales = loadJSON(STORAGE_KEYS.sales, []);
-    let currentOrder = [];
-
-    init();
-
-    function init(){
-      fillSettings();
-      updatePriceViews();
-      updateSummary();
-      renderHistory();
-    }
-
-    function loadJSON(key, fallback){
-      try{
-        const raw = localStorage.getItem(key);
-        return raw ? JSON.parse(raw) : fallback;
-      } catch {
-        return fallback;
-      }
-    }
-
-    function saveJSON(key, value){
-      localStorage.setItem(key, JSON.stringify(value));
-    }
-
-    function showSection(id, btn){
-      document.querySelectorAll('.section').forEach(sec => sec.classList.remove('active'));
-      document.getElementById(id).classList.add('active');
-
-      document.querySelectorAll('.tabs button').forEach(b => b.classList.remove('active'));
-      btn.classList.add('active');
-
-      if(id === 'historial') renderHistory();
-    }
-
-    function fillSettings(){
-      document.getElementById('stockPollo').value = stock.pollo;
-      document.getElementById('stockCerdo').value = stock.cerdo;
-
-      document.getElementById('precioPollo').value = prices.ramenPollo;
-      document.getElementById('precioCerdo').value = prices.ramenCerdo;
-      document.getElementById('precioComboRB').value = prices.comboRB;
-      document.getElementById('precioComboRG').value = prices.comboRG;
-      document.getElementById('precioComboFull').value = prices.comboFull;
-    }
-
-    function updatePriceViews(){
-      document.getElementById('pricePolloView').textContent = formatCLP(prices.ramenPollo);
-      document.getElementById('priceCerdoView').textContent = formatCLP(prices.ramenCerdo);
-      document.getElementById('priceComboRBView').textContent = formatCLP(prices.comboRB);
-      document.getElementById('priceComboRGView').textContent = formatCLP(prices.comboRG);
-      document.getElementById('priceComboFullView').textContent = formatCLP(prices.comboFull);
-    }
-
-    function saveStock(){
-      stock.pollo = Math.max(0, parseInt(document.getElementById('stockPollo').value || '0', 10));
-      stock.cerdo = Math.max(0, parseInt(document.getElementById('stockCerdo').value || '0', 10));
-      saveJSON(STORAGE_KEYS.stock, stock);
-      fillSettings();
-      updateSummary();
-      alert('Stock guardado');
-    }
-
-    function resetStock(){
-      stock = { pollo: 15, cerdo: 15 };
-      saveJSON(STORAGE_KEYS.stock, stock);
-      fillSettings();
-      updateSummary();
-      alert('Stock restablecido');
-    }
-
-    function savePrices(){
-      prices.ramenPollo = Math.max(0, parseInt(document.getElementById('precioPollo').value || '0', 10));
-      prices.ramenCerdo = Math.max(0, parseInt(document.getElementById('precioCerdo').value || '0', 10));
-      prices.comboRB = Math.max(0, parseInt(document.getElementById('precioComboRB').value || '0', 10));
-      prices.comboRG = Math.max(0, parseInt(document.getElementById('precioComboRG').value || '0', 10));
-      prices.comboFull = Math.max(0, parseInt(document.getElementById('precioComboFull').value || '0', 10));
-      saveJSON(STORAGE_KEYS.prices, prices);
-      updatePriceViews();
-      updateSummary();
-      alert('Precios guardados');
-    }
-
-    function addSimpleRamen(type){
-      if(type === 'pollo' && getRemainingStock('pollo') <= 0){
-        alert('No queda stock de ramen pollo');
-        return;
-      }
-      if(type === 'cerdo' && getRemainingStock('cerdo') <= 0){
-        alert('No queda stock de ramen cerdo');
-        return;
-      }
-
-      currentOrder.push({
-        type: 'simple',
-        name: type === 'pollo' ? 'Ramen Pollo' : 'Ramen Cerdo',
-        ramenType: type,
-        price: type === 'pollo' ? prices.ramenPollo : prices.ramenCerdo
-      });
-
-      updateSummary();
-    }
-
-    function addComboRB(){
-      const ramenType = document.getElementById('comboRB_ramen').value;
-      const bebida = document.getElementById('comboRB_bebida').value;
-
-      if(getRemainingStock(ramenType) <= 0){
-        alert('No queda stock para ese ramen');
-        return;
-      }
-
-      currentOrder.push({
-        type: 'comboRB',
-        name: `Ramen ${capitalize(ramenType)} + ${bebida}`,
-        ramenType,
-        bebida,
-        price: prices.comboRB
-      });
-
-      updateSummary();
-    }
-
-    function addComboRG(){
-      const ramenType = document.getElementById('comboRG_ramen').value;
-      const gyoza = document.getElementById('comboRG_gyoza').value;
-
-      if(getRemainingStock(ramenType) <= 0){
-        alert('No queda stock para ese ramen');
-        return;
-      }
-
-      currentOrder.push({
-        type: 'comboRG',
-        name: `Ramen ${capitalize(ramenType)} + Gyozas ${gyoza}`,
-        ramenType,
-        gyoza,
-        price: prices.comboRG
-      });
-
-      updateSummary();
-    }
-
-    function addComboFull(){
-      const ramenType = document.getElementById('comboFull_ramen').value;
-      const bebida = document.getElementById('comboFull_bebida').value;
-      const gyoza = document.getElementById('comboFull_gyoza').value;
-
-      if(getRemainingStock(ramenType) <= 0){
-        alert('No queda stock para ese ramen');
-        return;
-      }
-
-      currentOrder.push({
-        type: 'comboFull',
-        name: `Ramen ${capitalize(ramenType)} + ${bebida} + Gyozas ${gyoza}`,
-        ramenType,
-        bebida,
-        gyoza,
-        price: prices.comboFull
-      });
-
-      updateSummary();
-    }
-
-    function getReservedCount(type){
-      return currentOrder.filter(item => item.ramenType === type).length;
-    }
-
-    function getRemainingStock(type){
-      return (type === 'pollo' ? stock.pollo : stock.cerdo) - getReservedCount(type);
-    }
-
-    function getSubtotal(){
-      return currentOrder.reduce((sum, item) => sum + item.price, 0);
-    }
-
-    function getDelivery(){
-      return parseInt(document.getElementById('clienteComuna').value || '0', 10);
-    }
-
-    function getDiscount(){
-      const promo = document.getElementById('promoDelivery').checked;
-      const subtotal = getSubtotal();
-      const delivery = getDelivery();
-      if(promo && subtotal >= 20000) return Math.round(delivery * 0.5);
-      return 0;
-    }
-
-    function getTotal(){
-      return getSubtotal() + getDelivery() - getDiscount();
-    }
-
-    function removeItem(index){
-      currentOrder.splice(index, 1);
-      updateSummary();
-    }
-
-    function limpiarPedido(){
-      currentOrder = [];
-      updateSummary();
-    }
-
-    function updateSummary(){
-      const lista = document.getElementById('pedidoLista');
-      lista.innerHTML = '';
-
-      if(!currentOrder.length){
-        lista.innerHTML = '<li class="muted">Aún no hay productos agregados.</li>';
-      } else {
-        currentOrder.forEach((item, index) => {
-          const li = document.createElement('li');
-          li.innerHTML = `${item.name} — $${formatCLP(item.price)} 
-            <button class="btn btn-secondary" style="padding:4px 8px; margin-left:6px;" onclick="removeItem(${index})">Quitar</button>`;
-          lista.appendChild(li);
-        });
-      }
-
-      document.getElementById('subtotalTxt').textContent = '$' + formatCLP(getSubtotal());
-      document.getElementById('deliveryTxt').textContent = '$' + formatCLP(getDelivery());
-      document.getElementById('descuentoTxt').textContent = '-$' + formatCLP(getDiscount());
-      document.getElementById('totalTxt').textContent = '$' + formatCLP(getTotal());
-
-      document.getElementById('stockPolloTxt').innerHTML = stockBadge(getRemainingStock('pollo'));
-      document.getElementById('stockCerdoTxt').innerHTML = stockBadge(getRemainingStock('cerdo'));
-    }
-
-    function stockBadge(value){
-      if(value <= 0) return '<span class="badge out">Sin stock</span>';
-      if(value <= 3) return `<span class="badge warn">Quedan ${value}</span>`;
-      return `<span class="badge ok">Quedan ${value}</span>`;
-    }
-
-    function validateOrder(){
-      const nombre = document.getElementById('clienteNombre').value.trim();
-      const direccion = document.getElementById('clienteDireccion').value.trim();
-      if(!nombre){
-        alert('Ingresa el nombre del cliente');
-        return false;
-      }
-      if(!direccion){
-        alert('Ingresa la dirección');
-        return false;
-      }
-      if(!currentOrder.length){
-        alert('Agrega al menos un producto');
-        return false;
-      }
-      return true;
-    }
-
-    async function finalizarPedido(){
-      if(!validateOrder()) return;
-
-      const cliente = document.getElementById('clienteNombre').value.trim();
-      const direccion = document.getElementById('clienteDireccion').value.trim();
-      const comunaSelect = document.getElementById('clienteComuna');
-      const comuna = comunaSelect.options[comunaSelect.selectedIndex].text;
-      const atendidoPor = document.getElementById('atendidoPor').value;
-      const medioPago = document.getElementById('medioPago').value;
-      const observaciones = document.getElementById('observaciones').value.trim();
-
-      const order = {
-        folio: nextFolio(),
-        fecha: new Date().toLocaleDateString('es-CL'),
-        hora: new Date().toLocaleTimeString('es-CL', { hour: '2-digit', minute: '2-digit' }),
-        cliente,
-        direccion,
-        comuna,
-        atendidoPor,
-        medioPago,
-        observaciones,
-        items: [...currentOrder],
-        subtotal: getSubtotal(),
-        delivery: getDelivery(),
-        descuento: getDiscount(),
-        total: getTotal()
-      };
-
-      descontarStock(order);
-      sales.push(order);
-      saveJSON(STORAGE_KEYS.sales, sales);
-      saveJSON(STORAGE_KEYS.stock, stock);
-      fillSettings();
-
-      await generateAndPrintTickets(order);
-
-      currentOrder = [];
-      document.getElementById('clienteNombre').value = '';
-      document.getElementById('clienteDireccion').value = '';
-      document.getElementById('observaciones').value = '';
-      document.getElementById('promoDelivery').checked = false;
-
-      updateSummary();
-      renderHistory();
-
-      alert(`Pedido ${order.folio} generado`);
-    }
-
-    function descontarStock(order){
-      order.items.forEach(item => {
-        if(item.ramenType === 'pollo') stock.pollo = Math.max(0, stock.pollo - 1);
-        if(item.ramenType === 'cerdo') stock.cerdo = Math.max(0, stock.cerdo - 1);
-      });
-    }
-
-    function nextFolio(){
-      const n = parseInt(localStorage.getItem(STORAGE_KEYS.folio) || '0', 10) + 1;
-      localStorage.setItem(STORAGE_KEYS.folio, String(n));
-      return String(n).padStart(5, '0');
-    }
-
-    function formatCLP(value){
-      return Number(value || 0).toLocaleString('es-CL');
-    }
-
-    function capitalize(text){
-      return text.charAt(0).toUpperCase() + text.slice(1);
-    }
-
-    async function loadLogoDataUrl(){
-      try{
-        const res = await fetch('logo.png');
-        const blob = await res.blob();
-        return await blobToDataURL(blob);
-      } catch {
-        return null;
-      }
-    }
-
-    function blobToDataURL(blob){
-      return new Promise((resolve, reject) => {
-        const reader = new FileReader();
-        reader.onloadend = () => resolve(reader.result);
-        reader.onerror = reject;
-        reader.readAsDataURL(blob);
-      });
-    }
-
-    async function generateAndPrintTickets(order){
-      const logoDataUrl = await loadLogoDataUrl();
-      const clienteBlob = await generateTicketPdf(order, 'CLIENTE', logoDataUrl, false);
-      const internoBlob = await generateTicketPdf(order, 'RESPALDO INTERNO', logoDataUrl, true);
-
-      openBlobForPrint(clienteBlob);
-      setTimeout(() => openBlobForPrint(internoBlob), 900);
-    }
-
-    async function generateTicketPdf(order, copyLabel, logoDataUrl, includeInternal){
-      const { jsPDF } = window.jspdf;
-      const doc = new jsPDF({
-        orientation: 'portrait',
-        unit: 'mm',
-        format: [80, 180]
-      });
-
-      let y = 8;
-
-      if(logoDataUrl){
-        try{
-          doc.addImage(logoDataUrl, 'PNG', 18, y, 44, 22);
-          y += 25;
-        } catch {
-          doc.setFontSize(15);
-          doc.text('RAMEN & FUEGO', 40, y, { align:'center' });
-          y += 8;
-        }
-      } else {
-        doc.setFontSize(15);
-        doc.text('RAMEN & FUEGO', 40, y, { align:'center' });
-        y += 8;
-      }
-
-      doc.setFontSize(10);
-      doc.setFont(undefined, 'bold');
-      doc.text(copyLabel, 40, y, { align:'center' });
-      y += 5;
-
-      doc.setLineWidth(0.2);
-      doc.line(6, y, 74, y);
-      y += 5;
-
-      doc.setFontSize(8.8);
-      doc.setFont(undefined, 'normal');
-
-      const info = [
-        `Folio: ${order.folio}`,
-        `Fecha: ${order.fecha}`,
-        `Hora: ${order.hora}`,
-        `Atendido por: ${order.atendidoPor}`,
-        `Cliente: ${order.cliente}`,
-        `Dirección: ${order.direccion}`,
-        `Comuna: ${order.comuna}`,
-        `Pago: ${order.medioPago}`
-      ];
-
-      if(order.observaciones) info.push(`Obs.: ${order.observaciones}`);
-
-      info.forEach(line => {
-        const lines = doc.splitTextToSize(line, 66);
-        doc.text(lines, 7, y);
-        y += lines.length * 4.2;
-      });
-
-      y += 1;
-      doc.line(6, y, 74, y);
-      y += 5;
-
-      doc.setFont(undefined, 'bold');
-      doc.text('DETALLE', 7, y);
-      y += 5;
-      doc.setFont(undefined, 'normal');
-
-      order.items.forEach(item => {
-        const lines = doc.splitTextToSize(`• ${item.name} - $${formatCLP(item.price)}`, 66);
-        doc.text(lines, 7, y);
-        y += lines.length * 4.2;
-      });
-
-      y += 2;
-      doc.line(6, y, 74, y);
-      y += 5;
-
-      doc.text(`Subtotal: $${formatCLP(order.subtotal)}`, 7, y); y += 5;
-      doc.text(`Delivery: $${formatCLP(order.delivery)}`, 7, y); y += 5;
-      doc.text(`Descuento delivery: -$${formatCLP(order.descuento)}`, 7, y); y += 6;
-
-      doc.setFont(undefined, 'bold');
-      doc.setFontSize(10.5);
-      doc.text(`TOTAL: $${formatCLP(order.total)}`, 7, y);
-      y += 7;
-
-      if(includeInternal){
-        const costo = estimateInternalCost(order);
-        const margen = order.total - costo;
-        doc.setFont(undefined, 'normal');
-        doc.setFontSize(8.8);
-        doc.text(`Costo estimado: $${formatCLP(costo)}`, 7, y); y += 5;
-        doc.text(`Margen estimado: $${formatCLP(margen)}`, 7, y); y += 6;
-      }
-
-      doc.line(6, y, 74, y);
-      y += 6;
-      doc.setFontSize(8.5);
-      doc.text('Gracias por tu compra 🔥', 40, y, { align:'center' });
-
-      return doc.output('blob');
-    }
-
-    function estimateInternalCost(order){
-      let cost = 0;
-      order.items.forEach(item => {
-        if(item.type === 'simple'){
-          cost += item.ramenType === 'pollo' ? 2500 : 2600;
-        } else if(item.type === 'comboRB'){
-          cost += item.ramenType === 'pollo' ? 3000 : 3100;
-        } else if(item.type === 'comboRG'){
-          cost += item.ramenType === 'pollo' ? 3800 : 3900;
-        } else if(item.type === 'comboFull'){
-          cost += item.ramenType === 'pollo' ? 4300 : 4400;
-        }
-      });
-      return cost;
-    }
-
-    function openBlobForPrint(blob){
-      const url = URL.createObjectURL(blob);
-      const win = window.open(url, '_blank');
-      if(!win){
-        alert('El navegador bloqueó la impresión. Permite ventanas emergentes.');
-        return;
-      }
-      win.onload = () => setTimeout(() => win.print(), 500);
-    }
-
-    function renderHistory(){
-      const cont = document.getElementById('historialContenido');
-      if(!sales.length){
-        cont.innerHTML = '<p class="muted">Aún no hay ventas registradas.</p>';
-        return;
-      }
-
-      let html = `
-        <table>
-          <thead>
-            <tr>
-              <th>Folio</th>
-              <th>Fecha</th>
-              <th>Cliente</th>
-              <th>Atendido por</th>
-              <th>Total</th>
-            </tr>
-          </thead>
-          <tbody>
-      `;
-
-      [...sales].reverse().forEach(sale => {
-        html += `
-          <tr>
-            <td>${sale.folio}</td>
-            <td>${sale.fecha} ${sale.hora}</td>
-            <td>${sale.cliente}</td>
-            <td>${sale.atendidoPor}</td>
-            <td>$${formatCLP(sale.total)}</td>
-          </tr>
-        `;
-      });
-
-      html += '</tbody></table>';
-      cont.innerHTML = html;
-    }
-
-    function mostrarResumenCierre(){
-      const cont = document.getElementById('resumenCierre');
-
-      if(!sales.length){
-        cont.innerHTML = '<p class="muted">No hay ventas registradas.</p>';
-        return;
-      }
-
-      const totalVentas = sales.reduce((a,b)=>a+b.total,0);
-      const totalDelivery = sales.reduce((a,b)=>a+b.delivery,0);
-      const totalDescuentos = sales.reduce((a,b)=>a+b.descuento,0);
-      const costoEstimado = sales.reduce((sum, sale) => sum + estimateInternalCost(sale), 0);
-      const margen = totalVentas - costoEstimado;
-
-      cont.innerHTML = `
-        <div class="card soft">
-          <div class="line"><span>Pedidos</span><strong>${sales.length}</strong></div>
-          <div class="line"><span>Ventas totales</span><strong>$${formatCLP(totalVentas)}</strong></div>
-          <div class="line"><span>Delivery bruto</span><strong>$${formatCLP(totalDelivery)}</strong></div>
-          <div class="line"><span>Descuentos delivery</span><strong>-$${formatCLP(totalDescuentos)}</strong></div>
-          <div class="line"><span>Costo estimado</span><strong>$${formatCLP(costoEstimado)}</strong></div>
-          <div class="line total"><span>Margen estimado</span><span>$${formatCLP(margen)}</span></div>
-        </div>
-      `;
-    }
-
-    function exportExcel(){
-      if(!sales.length){
-        alert('No hay ventas para exportar');
-        return;
-      }
-
-      const rows = sales.map(sale => ({
-        Folio: sale.folio,
-        Fecha: sale.fecha,
-        Hora: sale.hora,
-        'Atendido por': sale.atendidoPor,
-        Cliente: sale.cliente,
-        Dirección: sale.direccion,
-        Comuna: sale.comuna,
-        'Medio de pago': sale.medioPago,
-        Detalle: sale.items.map(i => i.name).join(' | '),
-        Subtotal: sale.subtotal,
-        Delivery: sale.delivery,
-        'Descuento Delivery': sale.descuento,
-        Total: sale.total,
-        'Costo Estimado': estimateInternalCost(sale),
-        'Margen Estimado': sale.total - estimateInternalCost(sale),
-        Observaciones: sale.observaciones || ''
-      }));
-
-      const ws = XLSX.utils.json_to_sheet(rows);
-      const wb = XLSX.utils.book_new();
-      XLSX.utils.book_append_sheet(wb, ws, 'Ventas');
-      XLSX.writeFile(wb, `Cierre_Ramen_y_Fuego_${new Date().toISOString().slice(0,10)}.xlsx`);
-    }
-  </script>
+
+<!-- LOGIN -->
+<div id="loginScreen" class="container">
+<h2>Ingreso</h2>
+<input id="user" placeholder="Usuario"><br><br>
+<input id="pass" type="password" placeholder="Password"><br><br>
+<button onclick="login()">Ingresar</button>
+</div>
+
+<!-- APP -->
+<div id="app" style="display:none" class="container">
+
+<h2>Ramen & Fuego</h2>
+<p>Atendido por: <strong id="usuarioActivo"></strong></p>
+
+<input id="cliente" placeholder="Nombre cliente"><br><br>
+<input id="direccion" placeholder="Dirección"><br><br>
+
+<select id="comuna">
+<option value="1000">El Rincón</option>
+<option value="2500">Codegua</option>
+<option value="4000">Graneros</option>
+</select><br><br>
+
+<button onclick="addItem('Ramen Pollo',5000,'pollo')">Ramen Pollo</button>
+<button onclick="addItem('Ramen Cerdo',5000,'cerdo')">Ramen Cerdo</button>
+
+<h3>Pedido</h3>
+<ul id="lista"></ul>
+
+<p>Total: $<span id="total">0</span></p>
+
+<button onclick="finalizar()">Finalizar</button>
+<button onclick="reimprimir()">Reimprimir último</button>
+
+</div>
+
+<script>
+
+// 🔥 USUARIOS
+const usuarios = {
+  "Exequiel":"190309",
+  "Ana María":"170783",
+  "Angelo":"010783"
+};
+
+let usuarioActual = null;
+let pedido = [];
+let lastOrder = null;
+let printingInProgress = false;
+
+// 🔐 LOGIN
+function login(){
+  const u = document.getElementById("user").value;
+  const p = document.getElementById("pass").value;
+
+  if(usuarios[u] && usuarios[u]===p){
+    usuarioActual = u;
+    document.getElementById("loginScreen").style.display="none";
+    document.getElementById("app").style.display="block";
+    document.getElementById("usuarioActivo").innerText = u;
+  } else {
+    alert("Datos incorrectos");
+  }
+}
+
+// 🧾 AGREGAR ITEM
+function addItem(nombre,precio,tipo){
+  pedido.push({nombre,precio,tipo});
+  render();
+}
+
+function render(){
+  const lista = document.getElementById("lista");
+  lista.innerHTML="";
+  let total=0;
+
+  pedido.forEach(p=>{
+    lista.innerHTML += `<li>${p.nombre} $${p.precio}</li>`;
+    total+=p.precio;
+  });
+
+  document.getElementById("total").innerText = total;
+}
+
+// 🔒 PROTECCIÓN
+window.addEventListener("beforeunload",function(e){
+  if(pedido.length>0 || printingInProgress){
+    e.preventDefault();
+    e.returnValue="";
+  }
+});
+
+// 💰 FINALIZAR
+async function finalizar(){
+
+  if(printingInProgress) return alert("Imprimiendo...");
+
+  if(pedido.length===0) return alert("Sin pedido");
+
+  const order={
+    cliente:document.getElementById("cliente").value,
+    direccion:document.getElementById("direccion").value,
+    comuna:document.getElementById("comuna").value,
+    atendido:usuarioActual,
+    items:[...pedido],
+    total:pedido.reduce((a,b)=>a+b.precio,0)
+  };
+
+  lastOrder = order;
+
+  printingInProgress=true;
+
+  await imprimir(order);
+
+  pedido=[];
+  render();
+
+  setTimeout(()=>printingInProgress=false,3000);
+}
+
+// 🧾 REIMPRIMIR
+function reimprimir(){
+  if(!lastOrder) return alert("No hay ticket");
+  imprimir(lastOrder);
+}
+
+// 🖨️ TICKET 58MM
+async function imprimir(order){
+
+  const {jsPDF}=window.jspdf;
+
+  const doc=new jsPDF({
+    orientation:"portrait",
+    unit:"mm",
+    format:[58,200]
+  });
+
+  let y=5;
+
+  doc.setFontSize(10);
+  doc.text("RAMEN & FUEGO",29,y,{align:"center"});
+  y+=5;
+
+  doc.setFontSize(8);
+  doc.text(`Atiende: ${order.atendido}`,2,y); y+=4;
+  doc.text(`Cliente: ${order.cliente}`,2,y); y+=4;
+  doc.text(`Dir: ${order.direccion}`,2,y); y+=4;
+
+  y+=2;
+
+  order.items.forEach(i=>{
+    doc.text(i.nombre,2,y);
+    doc.text("$"+i.precio,56,y,{align:"right"});
+    y+=4;
+  });
+
+  y+=2;
+  doc.text("TOTAL",2,y);
+  doc.text("$"+order.total,56,y,{align:"right"});
+  y+=6;
+
+  doc.text("Gracias 🔥",29,y,{align:"center"});
+
+  const blob = doc.output("blob");
+
+  const url = URL.createObjectURL(blob);
+  const win = window.open(url);
+
+  win.onload=()=>setTimeout(()=>win.print(),500);
+}
+
+</script>
+
 </body>
 </html>
