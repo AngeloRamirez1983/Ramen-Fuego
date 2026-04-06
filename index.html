@@ -100,6 +100,13 @@
       color:var(--muted);
     }
 
+    .header-right{
+      display:flex;
+      align-items:center;
+      gap:10px;
+      flex-wrap:wrap;
+    }
+
     .tabs{
       display:flex;
       gap:8px;
@@ -463,12 +470,15 @@
         </div>
       </div>
 
-      <div class="tabs">
-        <button class="active" onclick="showSection('pedidos', this)">Pedidos</button>
-        <button onclick="showSection('stock', this)">Stock</button>
-        <button onclick="showSection('precios', this)">Precios</button>
-        <button onclick="showSection('historial', this)">Historial</button>
-        <button onclick="showSection('cierre', this)">Cierre</button>
+      <div class="header-right">
+        <div class="tabs">
+          <button class="active" onclick="showSection('pedidos', this)">Pedidos</button>
+          <button onclick="showSection('stock', this)">Stock</button>
+          <button onclick="showSection('precios', this)">Precios</button>
+          <button onclick="showSection('historial', this)">Historial</button>
+          <button onclick="showSection('cierre', this)">Cierre</button>
+        </div>
+        <button class="btn btn-danger" onclick="cerrarSesion()">Cerrar sesión</button>
       </div>
     </div>
   </header>
@@ -496,14 +506,14 @@
             <option value="0">Retiro en local (sin costo)</option>
             <option value="1000">El Rincón / La Punta / Los Marcos</option>
             <option value="2500">Codegua</option>
-            <option value="4000">Graneros / San Francisco / Mostazal</option>
+            <option value="4000">Graneros / San Francisco</option>
           </select>
 
           <label>Atendido por</label>
           <input id="atendidoPorView" readonly>
 
           <label>Medio de pago</label>
-          <select id="medioPago">
+          <select id="medioPago" onchange="autoSaveDraft()">
             <option>Transferencia</option>
             <option>Efectivo</option>
             <option>Débito</option>
@@ -511,7 +521,7 @@
           </select>
 
           <label>Observaciones</label>
-          <textarea id="observaciones" placeholder="Ej: con picante, sin cebollín..."></textarea>
+          <textarea id="observaciones" placeholder="Ej: con picante, sin cebollín..." oninput="autoSaveDraft()"></textarea>
 
           <div class="actions">
             <label style="display:flex; align-items:center; gap:8px; margin:0;">
@@ -629,6 +639,17 @@
           </div>
         </div>
       </div>
+
+      <div class="spacer"></div>
+
+      <div class="card soft">
+        <h4>Extras</h4>
+        <div class="actions">
+          <button class="btn btn-secondary" onclick="addExtra('Huevo extra', 500)">Huevo extra +$500</button>
+          <button class="btn btn-secondary" onclick="addExtra('Picante especial', 500)">Picante especial +$500</button>
+          <button class="btn btn-secondary" onclick="addExtra('Extra carne', 1000)">Extra carne +$1.000</button>
+        </div>
+      </div>
     </section>
 
     <section id="stock" class="section">
@@ -712,6 +733,7 @@
       <div class="card">
         <div class="actions">
           <button class="btn btn-primary" onclick="mostrarResumenCierre()">Ver resumen</button>
+          <button class="btn btn-secondary" onclick="renderUltimosCierres()">Ver cierre automático</button>
           <button class="btn btn-ok" onclick="exportExcel()">Exportar Excel</button>
         </div>
 
@@ -724,13 +746,15 @@
 
   <script>
     const STORAGE_KEYS = {
-      stock: 'ryf_stock_v4',
-      prices: 'ryf_prices_v4',
-      sales: 'ryf_sales_v4',
-      folio: 'ryf_folio_v4',
-      sessionUser: 'ryf_session_user_v4',
-      lastOrder: 'ryf_last_order_v4',
-      draft: 'ryf_draft_v1'
+      stock: 'ryf_stock_v5',
+      prices: 'ryf_prices_v5',
+      sales: 'ryf_sales_v5',
+      folio: 'ryf_folio_v5',
+      sessionUser: 'ryf_session_user_v5',
+      lastOrder: 'ryf_last_order_v5',
+      draft: 'ryf_draft_v2',
+      closures: 'ryf_closures_v1',
+      lastAccessDate: 'ryf_last_access_date_v1'
     };
 
     const USERS = {
@@ -745,14 +769,14 @@
       ramenCerdo: 5500,
       comboRB: 6500,
       comboRG: 7500,
-      comboFull: 8900
+      comboFull: 9000
     };
 
     let stock = loadJSON(STORAGE_KEYS.stock, defaultStock);
     let prices = loadJSON(STORAGE_KEYS.prices, defaultPrices);
     let sales = loadJSON(STORAGE_KEYS.sales, []);
     let currentOrder = [];
-    let currentUser = localStorage.getItem(STORAGE_KEYS.sessionUser) || "";
+    let currentUser = "";
     let lastOrder = loadJSON(STORAGE_KEYS.lastOrder, null);
     let printingInProgress = false;
 
@@ -766,11 +790,15 @@
     init();
 
     function init(){
+      revisarCambioDeDia();
       fillSettings();
       updatePriceViews();
       loadDraft();
       updateSummary();
       renderHistory();
+
+      // No restauramos sesión anterior: siempre parte deslogueado
+      localStorage.removeItem(STORAGE_KEYS.sessionUser);
       restoreSession();
     }
 
@@ -781,6 +809,8 @@
         document.getElementById('atendidoPorView').value = currentUser;
       } else {
         document.getElementById('loginOverlay').classList.remove('hidden');
+        document.getElementById('usuarioActivoHeader').textContent = '—';
+        document.getElementById('atendidoPorView').value = '';
       }
     }
 
@@ -800,13 +830,23 @@
       }
 
       currentUser = user;
-      localStorage.setItem(STORAGE_KEYS.sessionUser, currentUser);
       document.getElementById('usuarioActivoHeader').textContent = currentUser;
       document.getElementById('atendidoPorView').value = currentUser;
       document.getElementById('loginOverlay').classList.add('hidden');
       document.getElementById('loginPassword').value = '';
       error.textContent = '';
       autoSaveDraft();
+    }
+
+    function cerrarSesion(){
+      generarCierreAutomaticoDelDia();
+      currentUser = "";
+      localStorage.removeItem(STORAGE_KEYS.sessionUser);
+      document.getElementById('usuarioActivoHeader').textContent = '—';
+      document.getElementById('atendidoPorView').value = '';
+      document.getElementById('loginUsuario').value = '';
+      document.getElementById('loginPassword').value = '';
+      document.getElementById('loginOverlay').classList.remove('hidden');
     }
 
     function loadJSON(key, fallback){
@@ -820,6 +860,64 @@
 
     function saveJSON(key, value){
       localStorage.setItem(key, JSON.stringify(value));
+    }
+
+    function hoyISO(){
+      const now = new Date();
+      return now.toISOString().slice(0, 10);
+    }
+
+    function fechaCLAISO(fechaCL){
+      if (!fechaCL) return '';
+      const sep = fechaCL.includes('/') ? '/' : '-';
+      const parts = fechaCL.split(sep);
+      if (parts.length !== 3) return '';
+      const [dd, mm, yyyy] = parts;
+      return `${yyyy}-${mm.padStart(2,'0')}-${dd.padStart(2,'0')}`;
+    }
+
+    function generarCierreAutomaticoDelDia(fechaObjetivo = null){
+      const closures = loadJSON(STORAGE_KEYS.closures, []);
+      const fechaISO = fechaObjetivo || hoyISO();
+
+      if (closures.some(c => c.fechaISO === fechaISO)) return;
+
+      const ventasDelDia = sales.filter(s => fechaCLAISO(s.fecha) === fechaISO);
+      if (!ventasDelDia.length) return;
+
+      const totalVentas = ventasDelDia.reduce((a,b) => a + b.total, 0);
+      const totalDelivery = ventasDelDia.reduce((a,b) => a + b.delivery, 0);
+      const totalDescuentos = ventasDelDia.reduce((a,b) => a + b.descuento, 0);
+      const costoEstimado = ventasDelDia.reduce((sum, sale) => sum + estimateInternalCost(sale), 0);
+      const margen = totalVentas - costoEstimado;
+
+      closures.push({
+        fechaISO,
+        pedidos: ventasDelDia.length,
+        totalVentas,
+        totalDelivery,
+        totalDescuentos,
+        costoEstimado,
+        margen,
+        creadoEn: new Date().toISOString()
+      });
+
+      saveJSON(STORAGE_KEYS.closures, closures);
+    }
+
+    function revisarCambioDeDia(){
+      const lastAccess = localStorage.getItem(STORAGE_KEYS.lastAccessDate);
+      const hoy = hoyISO();
+
+      if (!lastAccess) {
+        localStorage.setItem(STORAGE_KEYS.lastAccessDate, hoy);
+        return;
+      }
+
+      if (lastAccess !== hoy) {
+        generarCierreAutomaticoDelDia(lastAccess);
+        localStorage.setItem(STORAGE_KEYS.lastAccessDate, hoy);
+      }
     }
 
     function autoSaveDraft(){
@@ -983,6 +1081,16 @@
         bebida,
         gyoza,
         price: prices.comboFull
+      });
+
+      updateSummary();
+    }
+
+    function addExtra(nombre, precio){
+      currentOrder.push({
+        type: 'extra',
+        name: nombre,
+        price: precio
       });
 
       updateSummary();
@@ -1192,8 +1300,8 @@
       try {
         const logoDataUrl = await loadLogoDataUrl();
 
-        const clienteBlob = await generateTicketPdf(order, 'CLIENTE', logoDataUrl, false);
-        const internoBlob = await generateTicketPdf(order, 'RESPALDO INTERNO', logoDataUrl, true);
+        const clienteBlob = await generateTicketPdf(order, 'CLIENTE', logoDataUrl);
+        const internoBlob = await generateTicketPdf(order, 'RESPALDO INTERNO', logoDataUrl);
 
         openBlobForPrint(clienteBlob);
 
@@ -1210,13 +1318,13 @@
       }, 4000);
     }
 
-    async function generateTicketPdf(order, copyLabel, logoDataUrl, includeInternal){
+    async function generateTicketPdf(order, copyLabel, logoDataUrl){
       const { jsPDF } = window.jspdf;
 
       const doc = new jsPDF({
         orientation: 'portrait',
         unit: 'mm',
-        format: [58, 200]
+        format: [58, 220]
       });
 
       let y = 5;
@@ -1317,6 +1425,7 @@
 
     function estimateInternalCost(order){
       let cost = 0;
+
       order.items.forEach(item => {
         if(item.type === 'simple'){
           cost += item.ramenType === 'pollo' ? 2500 : 2600;
@@ -1326,8 +1435,13 @@
           cost += item.ramenType === 'pollo' ? 3800 : 3900;
         } else if(item.type === 'comboFull'){
           cost += item.ramenType === 'pollo' ? 4300 : 4400;
+        } else if(item.type === 'extra'){
+          if(item.name === 'Huevo extra') cost += 300;
+          if(item.name === 'Picante especial') cost += 100;
+          if(item.name === 'Extra carne') cost += 600;
         }
       });
+
       return cost;
     }
 
@@ -1435,6 +1549,30 @@
           <div class="line"><span>Descuentos delivery</span><strong>-$${formatCLP(totalDescuentos)}</strong></div>
           <div class="line"><span>Costo estimado</span><strong>$${formatCLP(costoEstimado)}</strong></div>
           <div class="line total"><span>Margen estimado</span><span>$${formatCLP(margen)}</span></div>
+        </div>
+      `;
+    }
+
+    function renderUltimosCierres(){
+      const closures = loadJSON(STORAGE_KEYS.closures, []);
+      const cont = document.getElementById('resumenCierre');
+
+      if(!closures.length){
+        cont.innerHTML = '<p class="muted">No hay cierres automáticos guardados aún.</p>';
+        return;
+      }
+
+      const ultimo = closures[closures.length - 1];
+
+      cont.innerHTML = `
+        <div class="card soft">
+          <div class="line"><span>Fecha cierre</span><strong>${ultimo.fechaISO}</strong></div>
+          <div class="line"><span>Pedidos</span><strong>${ultimo.pedidos}</strong></div>
+          <div class="line"><span>Ventas totales</span><strong>$${formatCLP(ultimo.totalVentas)}</strong></div>
+          <div class="line"><span>Delivery bruto</span><strong>$${formatCLP(ultimo.totalDelivery)}</strong></div>
+          <div class="line"><span>Descuentos delivery</span><strong>-$${formatCLP(ultimo.totalDescuentos)}</strong></div>
+          <div class="line"><span>Costo estimado</span><strong>$${formatCLP(ultimo.costoEstimado)}</strong></div>
+          <div class="line total"><span>Margen estimado</span><span>$${formatCLP(ultimo.margen)}</span></div>
         </div>
       `;
     }
