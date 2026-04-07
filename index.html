@@ -496,10 +496,10 @@
           <h3>Datos del cliente</h3>
 
           <label>Nombre del cliente</label>
-          <input id="clienteNombre" placeholder="Ej: Juan Pérez">
+          <input id="clienteNombre" placeholder="Ej: Juan Pérez" oninput="autoSaveDraft()">
 
           <label>Dirección</label>
-          <input id="clienteDireccion" placeholder="Ej: Los Aromos 123">
+          <input id="clienteDireccion" placeholder="Ej: Los Aromos 123" oninput="autoSaveDraft()">
 
           <label>Comuna / modalidad</label>
           <select id="clienteComuna" onchange="updateSummary()">
@@ -537,6 +537,7 @@
 
           <div class="line"><span>Stock pollo restante</span><strong id="stockPolloTxt"></strong></div>
           <div class="line"><span>Stock cerdo restante</span><strong id="stockCerdoTxt"></strong></div>
+          <div class="line"><span>Stock vegetariano restante</span><strong id="stockVegetarianoTxt"></strong></div>
           <div class="line"><span>Subtotal</span><strong id="subtotalTxt">$0</strong></div>
           <div class="line"><span>Delivery</span><strong id="deliveryTxt">$0</strong></div>
           <div class="line"><span>Descuento delivery</span><strong id="descuentoTxt">-$0</strong></div>
@@ -564,6 +565,12 @@
           <span class="price">$<span id="priceCerdoView"></span></span>
           <button class="btn btn-primary" onclick="addSimpleRamen('cerdo')">Agregar</button>
         </div>
+
+        <div class="card soft product-box">
+          <h4>Ramen Vegetariano</h4>
+          <span class="price">$<span id="priceVegetarianoView"></span></span>
+          <button class="btn btn-primary" onclick="addSimpleRamen('vegetariano')">Agregar</button>
+        </div>
       </div>
 
       <div class="spacer"></div>
@@ -575,6 +582,7 @@
           <select id="comboRB_ramen">
             <option value="pollo">Pollo</option>
             <option value="cerdo">Cerdo</option>
+            <option value="vegetariano">Vegetariano</option>
           </select>
 
           <label>Bebida</label>
@@ -596,6 +604,7 @@
           <select id="comboRG_ramen">
             <option value="pollo">Pollo</option>
             <option value="cerdo">Cerdo</option>
+            <option value="vegetariano">Vegetariano</option>
           </select>
 
           <label>Tipo de gyozas</label>
@@ -617,6 +626,7 @@
           <select id="comboFull_ramen">
             <option value="pollo">Pollo</option>
             <option value="cerdo">Cerdo</option>
+            <option value="vegetariano">Vegetariano</option>
           </select>
 
           <label>Bebida</label>
@@ -655,7 +665,7 @@
     <section id="stock" class="section">
       <div class="hero">
         <h2>Control de stock</h2>
-        <p>Edita el stock disponible para pollo y cerdo. Si llega a 0, no permitirá vender.</p>
+        <p>Edita el stock disponible para pollo, cerdo y vegetariano. Si llega a 0, no permitirá vender.</p>
       </div>
 
       <div class="card">
@@ -668,11 +678,15 @@
             <label>Stock ramen cerdo</label>
             <input id="stockCerdo" type="number" min="0">
           </div>
+          <div>
+            <label>Stock ramen vegetariano</label>
+            <input id="stockVegetariano" type="number" min="0">
+          </div>
         </div>
 
         <div class="actions">
           <button class="btn btn-primary" onclick="saveStock()">Guardar stock</button>
-          <button class="btn btn-secondary" onclick="resetStock()">Restablecer a 15 / 15</button>
+          <button class="btn btn-secondary" onclick="resetStock()">Restablecer stock base</button>
         </div>
       </div>
     </section>
@@ -746,13 +760,13 @@
 
   <script>
     const STORAGE_KEYS = {
-      stock: 'ryf_stock_v5',
-      prices: 'ryf_prices_v5',
-      sales: 'ryf_sales_v5',
-      folio: 'ryf_folio_v5',
-      sessionUser: 'ryf_session_user_v5',
-      lastOrder: 'ryf_last_order_v5',
-      draft: 'ryf_draft_v2',
+      stock: 'ryf_stock_v6',
+      prices: 'ryf_prices_v6',
+      sales: 'ryf_sales_v6',
+      folio: 'ryf_folio_v6',
+      sessionUser: 'ryf_session_user_v6',
+      lastOrder: 'ryf_last_order_v6',
+      draft: 'ryf_draft_v3',
       closures: 'ryf_closures_v1',
       lastAccessDate: 'ryf_last_access_date_v1'
     };
@@ -763,7 +777,7 @@
       "Angelo": "010783"
     };
 
-    const defaultStock = { pollo: 15, cerdo: 15 };
+    const defaultStock = { pollo: 15, cerdo: 15, vegetariano: 5 };
     const defaultPrices = {
       ramenPollo: 5500,
       ramenCerdo: 5500,
@@ -796,8 +810,6 @@
       loadDraft();
       updateSummary();
       renderHistory();
-
-      // No restauramos sesión anterior: siempre parte deslogueado
       localStorage.removeItem(STORAGE_KEYS.sessionUser);
       restoreSession();
     }
@@ -959,6 +971,7 @@
     function fillSettings(){
       document.getElementById('stockPollo').value = stock.pollo;
       document.getElementById('stockCerdo').value = stock.cerdo;
+      document.getElementById('stockVegetariano').value = stock.vegetariano;
 
       document.getElementById('precioPollo').value = prices.ramenPollo;
       document.getElementById('precioCerdo').value = prices.ramenCerdo;
@@ -970,6 +983,7 @@
     function updatePriceViews(){
       document.getElementById('pricePolloView').textContent = formatCLP(prices.ramenPollo);
       document.getElementById('priceCerdoView').textContent = formatCLP(prices.ramenCerdo);
+      document.getElementById('priceVegetarianoView').textContent = formatCLP(prices.ramenPollo);
       document.getElementById('priceComboRBView').textContent = formatCLP(prices.comboRB);
       document.getElementById('priceComboRGView').textContent = formatCLP(prices.comboRG);
       document.getElementById('priceComboFullView').textContent = formatCLP(prices.comboFull);
@@ -978,6 +992,7 @@
     function saveStock(){
       stock.pollo = Math.max(0, parseInt(document.getElementById('stockPollo').value || '0', 10));
       stock.cerdo = Math.max(0, parseInt(document.getElementById('stockCerdo').value || '0', 10));
+      stock.vegetariano = Math.max(0, parseInt(document.getElementById('stockVegetariano').value || '0', 10));
       saveJSON(STORAGE_KEYS.stock, stock);
       fillSettings();
       updateSummary();
@@ -985,7 +1000,7 @@
     }
 
     function resetStock(){
-      stock = { pollo: 15, cerdo: 15 };
+      stock = { pollo: 15, cerdo: 15, vegetariano: 5 };
       saveJSON(STORAGE_KEYS.stock, stock);
       fillSettings();
       updateSummary();
@@ -1013,12 +1028,21 @@
         alert('No queda stock de ramen cerdo');
         return;
       }
+      if(type === 'vegetariano' && getRemainingStock('vegetariano') <= 0){
+        alert('No queda stock de ramen vegetariano');
+        return;
+      }
 
       currentOrder.push({
         type: 'simple',
-        name: type === 'pollo' ? 'Ramen Pollo' : 'Ramen Cerdo',
+        name:
+          type === 'pollo'
+            ? 'Ramen Pollo'
+            : type === 'cerdo'
+            ? 'Ramen Cerdo'
+            : 'Ramen Vegetariano',
         ramenType: type,
-        price: type === 'pollo' ? prices.ramenPollo : prices.ramenCerdo
+        price: prices.ramenPollo
       });
 
       updateSummary();
@@ -1101,7 +1125,10 @@
     }
 
     function getRemainingStock(type){
-      return (type === 'pollo' ? stock.pollo : stock.cerdo) - getReservedCount(type);
+      if(type === 'pollo') return stock.pollo - getReservedCount(type);
+      if(type === 'cerdo') return stock.cerdo - getReservedCount(type);
+      if(type === 'vegetariano') return stock.vegetariano - getReservedCount(type);
+      return 0;
     }
 
     function getSubtotal(){
@@ -1166,6 +1193,7 @@
 
       document.getElementById('stockPolloTxt').innerHTML = stockBadge(getRemainingStock('pollo'));
       document.getElementById('stockCerdoTxt').innerHTML = stockBadge(getRemainingStock('cerdo'));
+      document.getElementById('stockVegetarianoTxt').innerHTML = stockBadge(getRemainingStock('vegetariano'));
 
       autoSaveDraft();
     }
@@ -1258,6 +1286,7 @@
       order.items.forEach(item => {
         if(item.ramenType === 'pollo') stock.pollo = Math.max(0, stock.pollo - 1);
         if(item.ramenType === 'cerdo') stock.cerdo = Math.max(0, stock.cerdo - 1);
+        if(item.ramenType === 'vegetariano') stock.vegetariano = Math.max(0, stock.vegetariano - 1);
       });
     }
 
@@ -1428,13 +1457,21 @@
 
       order.items.forEach(item => {
         if(item.type === 'simple'){
-          cost += item.ramenType === 'pollo' ? 2500 : 2600;
+          if(item.ramenType === 'pollo') cost += 2500;
+          else if(item.ramenType === 'cerdo') cost += 2600;
+          else if(item.ramenType === 'vegetariano') cost += 2200;
         } else if(item.type === 'comboRB'){
-          cost += item.ramenType === 'pollo' ? 3000 : 3100;
+          if(item.ramenType === 'pollo') cost += 3000;
+          else if(item.ramenType === 'cerdo') cost += 3100;
+          else if(item.ramenType === 'vegetariano') cost += 2700;
         } else if(item.type === 'comboRG'){
-          cost += item.ramenType === 'pollo' ? 3800 : 3900;
+          if(item.ramenType === 'pollo') cost += 3800;
+          else if(item.ramenType === 'cerdo') cost += 3900;
+          else if(item.ramenType === 'vegetariano') cost += 3500;
         } else if(item.type === 'comboFull'){
-          cost += item.ramenType === 'pollo' ? 4300 : 4400;
+          if(item.ramenType === 'pollo') cost += 4300;
+          else if(item.ramenType === 'cerdo') cost += 4400;
+          else if(item.ramenType === 'vegetariano') cost += 4000;
         } else if(item.type === 'extra'){
           if(item.name === 'Huevo extra') cost += 300;
           if(item.name === 'Picante especial') cost += 100;
