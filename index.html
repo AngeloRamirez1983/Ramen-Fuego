@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -10,469 +11,79 @@
 
   <style>
     :root{
-      --bg:#0f0b09;
-      --bg2:#1a120d;
-      --panel:rgba(24,17,13,.96);
-      --panel-soft:rgba(35,25,18,.95);
-      --line:rgba(255,255,255,.08);
-      --text:#fff5eb;
-      --muted:#d7c6b6;
-      --accent:#ff6a00;
-      --accent2:#ffb347;
-      --accent3:#ff2d00;
-      --ok:#2ecc71;
-      --danger:#ff4d4f;
-      --shadow:0 10px 30px rgba(0,0,0,.35);
+      --bg:#0f0b09; --bg2:#1a120d; --panel:rgba(24,17,13,.96); --panel-soft:rgba(35,25,18,.95);
+      --line:rgba(255,255,255,.08); --text:#fff5eb; --muted:#d7c6b6; --accent:#ff6a00;
+      --accent2:#ffb347; --accent3:#ff2d00; --ok:#2ecc71; --danger:#ff4d4f; --shadow:0 10px 30px rgba(0,0,0,.35);
     }
-
     *{box-sizing:border-box}
-
     body{
-      margin:0;
-      font-family:Arial, Helvetica, sans-serif;
-      color:var(--text);
-      background:
-        radial-gradient(circle at top right, rgba(255,106,0,.15), transparent 25%),
-        radial-gradient(circle at bottom left, rgba(255,45,0,.12), transparent 20%),
-        linear-gradient(180deg, var(--bg), var(--bg2));
-      min-height:100vh;
+      margin:0; font-family:Arial, Helvetica, sans-serif; color:var(--text);
+      background:radial-gradient(circle at top right, rgba(255,106,0,.15), transparent 25%),
+      radial-gradient(circle at bottom left, rgba(255,45,0,.12), transparent 20%),
+      linear-gradient(180deg, var(--bg), var(--bg2)); min-height:100vh;
     }
-
-    header{
-      position:sticky;
-      top:0;
-      z-index:50;
-      backdrop-filter: blur(8px);
-      background:rgba(10,8,7,.82);
-      border-bottom:1px solid var(--line);
-    }
-
-    .header-inner{
-      max-width:1200px;
-      margin:0 auto;
-      padding:14px;
-      display:flex;
-      align-items:center;
-      gap:14px;
-      justify-content:space-between;
-      flex-wrap:wrap;
-    }
-
-    .brand{
-      display:flex;
-      align-items:center;
-      gap:12px;
-    }
-
-    .brand img{
-      width:58px;
-      height:58px;
-      object-fit:contain;
-      border-radius:12px;
-      background:rgba(255,255,255,.03);
-      padding:4px;
-      border:1px solid var(--line);
-    }
-
-    .brand h1{
-      margin:0;
-      font-size:1.5rem;
-      line-height:1.1;
-      color:#fff;
-    }
-
-    .brand small{
-      display:block;
-      color:var(--accent2);
-      margin-top:2px;
-      font-weight:bold;
-      letter-spacing:.3px;
-    }
-
-    .brand-meta{
-      display:flex;
-      flex-direction:column;
-      gap:2px;
-    }
-
-    .brand-user{
-      font-size:12px;
-      color:var(--muted);
-    }
-
-    .header-right{
-      display:flex;
-      align-items:center;
-      gap:10px;
-      flex-wrap:wrap;
-    }
-
-    .tabs{
-      display:flex;
-      gap:8px;
-      flex-wrap:wrap;
-    }
-
-    .tabs button{
-      border:none;
-      padding:10px 14px;
-      border-radius:999px;
-      background:#241a14;
-      color:var(--text);
-      cursor:pointer;
-      font-weight:bold;
-      border:1px solid var(--line);
-      transition:.2s ease;
-    }
-
-    .tabs button.active,
-    .tabs button:hover{
-      background:linear-gradient(90deg, var(--accent), var(--accent3));
-      color:#fff;
-      transform:translateY(-1px);
-    }
-
-    .container{
-      max-width:1200px;
-      margin:0 auto;
-      padding:16px;
-    }
-
-    .section{
-      display:none;
-    }
-
-    .section.active{
-      display:block;
-    }
-
-    .hero{
-      background:
-        linear-gradient(135deg, rgba(255,106,0,.18), rgba(255,45,0,.08)),
-        var(--panel);
-      border:1px solid var(--line);
-      border-radius:22px;
-      padding:18px;
-      box-shadow:var(--shadow);
-      margin-bottom:16px;
-    }
-
-    .hero h2{
-      margin:0 0 8px 0;
-      font-size:1.4rem;
-    }
-
-    .hero p{
-      margin:0;
-      color:var(--muted);
-    }
-
-    .grid{
-      display:grid;
-      grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
-      gap:16px;
-    }
-
-    .card{
-      background:var(--panel);
-      border:1px solid var(--line);
-      border-radius:18px;
-      padding:16px;
-      box-shadow:var(--shadow);
-    }
-
-    .card.soft{
-      background:var(--panel-soft);
-    }
-
-    .card h3,
-    .card h4{
-      margin-top:0;
-      margin-bottom:10px;
-      color:#fff;
-    }
-
-    label{
-      display:block;
-      margin:10px 0 6px;
-      color:var(--muted);
-      font-size:14px;
-      text-align:left;
-    }
-
-    input, select, textarea{
-      width:100%;
-      border-radius:12px;
-      border:1px solid #3f2d22;
-      background:#120d0a;
-      color:#fff;
-      padding:11px 12px;
-      outline:none;
-    }
-
-    input:focus, select:focus, textarea:focus{
-      border-color:var(--accent);
-      box-shadow:0 0 0 2px rgba(255,106,0,.15);
-    }
-
-    textarea{
-      min-height:90px;
-      resize:vertical;
-    }
-
-    .product-box{
-      background:#16100c;
-      border:1px solid #3a291f;
-      border-radius:16px;
-      padding:14px;
-    }
-
-    .product-box .price{
-      color:var(--accent2);
-      font-weight:bold;
-      margin-bottom:10px;
-      display:block;
-    }
-
-    .actions{
-      display:flex;
-      gap:10px;
-      flex-wrap:wrap;
-      margin-top:12px;
-    }
-
-    button.btn{
-      border:none;
-      padding:11px 14px;
-      border-radius:12px;
-      cursor:pointer;
-      font-weight:bold;
-      transition:.2s ease;
-    }
-
-    .btn-primary{
-      background:linear-gradient(90deg,var(--accent),var(--accent3));
-      color:#fff;
-    }
-
-    .btn-secondary{
-      background:#2a1f19;
-      color:#fff;
-      border:1px solid #413028;
-    }
-
-    .btn-ok{
-      background:var(--ok);
-      color:#fff;
-    }
-
-    .btn-danger{
-      background:var(--danger);
-      color:#fff;
-    }
-
-    .btn-outline{
-      background:transparent;
-      color:#fff;
-      border:1px solid #5b4334;
-    }
-
-    button.btn:hover{
-      transform:translateY(-1px);
-      opacity:.96;
-    }
-
-    .summary{
-      background:linear-gradient(180deg, rgba(255,106,0,.08), rgba(255,255,255,.01));
-    }
-
-    .summary-list{
-      margin:0;
-      padding-left:18px;
-    }
-
-    .summary-list li{
-      margin-bottom:8px;
-    }
-
-    .line{
-      display:flex;
-      justify-content:space-between;
-      gap:12px;
-      padding:7px 0;
-      border-bottom:1px dashed rgba(255,255,255,.08);
-      color:var(--muted);
-    }
-
-    .line strong{
-      color:#fff;
-    }
-
-    .line.total{
-      font-size:1.2rem;
-      font-weight:bold;
-      color:#fff;
-      border-bottom:none;
-      margin-top:8px;
-    }
-
-    .badge{
-      display:inline-block;
-      padding:5px 10px;
-      border-radius:999px;
-      font-size:12px;
-      font-weight:bold;
-    }
-
-    .badge.ok{ background:rgba(46,204,113,.15); color:#85f5b3; }
-    .badge.warn{ background:rgba(255,179,71,.15); color:#ffcf85; }
-    .badge.out{ background:rgba(255,77,79,.14); color:#ff9a9b; }
-
-    table{
-      width:100%;
-      border-collapse:collapse;
-      margin-top:10px;
-      overflow:hidden;
-      border-radius:14px;
-    }
-
-    th, td{
-      border:1px solid rgba(255,255,255,.06);
-      padding:10px;
-      font-size:14px;
-      text-align:left;
-    }
-
-    th{
-      background:#221812;
-      color:var(--accent2);
-    }
-
-    td{
-      background:#140f0c;
-      vertical-align:top;
-    }
-
-    .muted{
-      color:var(--muted);
-      font-size:14px;
-    }
-
-    .center{
-      text-align:center;
-    }
-
-    .spacer{
-      height:10px;
-    }
-
-    .hidden{
-      display:none!important;
-    }
-
-    .login-overlay{
-      position:fixed;
-      inset:0;
-      background:rgba(9,7,6,.96);
-      z-index:9999;
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      padding:20px;
-    }
-
-    .login-card{
-      width:100%;
-      max-width:420px;
-      background:linear-gradient(180deg, rgba(255,106,0,.08), rgba(255,255,255,.01)), var(--panel);
-      border:1px solid var(--line);
-      border-radius:22px;
-      padding:22px;
-      box-shadow:var(--shadow);
-    }
-
-    .login-card img{
-      width:90px;
-      height:90px;
-      object-fit:contain;
-      display:block;
-      margin:0 auto 14px auto;
-      border-radius:16px;
-      background:rgba(255,255,255,.03);
-      padding:6px;
-    }
-
-    .login-card h2{
-      text-align:center;
-      margin-top:0;
-      margin-bottom:8px;
-    }
-
-    .login-card p{
-      text-align:center;
-      color:var(--muted);
-      margin-top:0;
-      margin-bottom:14px;
-    }
-
-    .error-msg{
-      color:#ff9a9b;
-      font-size:13px;
-      margin-top:10px;
-      text-align:center;
-      min-height:18px;
-    }
-
-    @media (max-width:700px){
-      .brand h1{ font-size:1.2rem; }
-      .tabs{ width:100%; }
-      .tabs button{ flex:1; }
-    }
+    header{position:sticky; top:0; z-index:50; backdrop-filter:blur(8px); background:rgba(10,8,7,.82); border-bottom:1px solid var(--line)}
+    .header-inner{max-width:1200px; margin:0 auto; padding:14px; display:flex; align-items:center; gap:14px; justify-content:space-between; flex-wrap:wrap}
+    .brand{display:flex; align-items:center; gap:12px}
+    .brand img{width:58px; height:58px; object-fit:contain; border-radius:12px; background:rgba(255,255,255,.03); padding:4px; border:1px solid var(--line)}
+    .brand h1{margin:0; font-size:1.5rem; line-height:1.1; color:#fff}
+    .brand small{display:block; color:var(--accent2); margin-top:2px; font-weight:bold; letter-spacing:.3px}
+    .brand-meta{display:flex; flex-direction:column; gap:2px}.brand-user{font-size:12px; color:var(--muted)}
+    .header-right{display:flex; align-items:center; gap:10px; flex-wrap:wrap}.tabs{display:flex; gap:8px; flex-wrap:wrap}
+    .tabs button{border:none; padding:10px 14px; border-radius:999px; background:#241a14; color:var(--text); cursor:pointer; font-weight:bold; border:1px solid var(--line); transition:.2s ease}
+    .tabs button.active,.tabs button:hover{background:linear-gradient(90deg,var(--accent),var(--accent3)); color:#fff; transform:translateY(-1px)}
+    .container{max-width:1200px; margin:0 auto; padding:16px}.section{display:none}.section.active{display:block}
+    .hero{background:linear-gradient(135deg, rgba(255,106,0,.18), rgba(255,45,0,.08)),var(--panel); border:1px solid var(--line); border-radius:22px; padding:18px; box-shadow:var(--shadow); margin-bottom:16px}
+    .hero h2{margin:0 0 8px 0; font-size:1.4rem}.hero p{margin:0; color:var(--muted)}
+    .grid{display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:16px}
+    .card{background:var(--panel); border:1px solid var(--line); border-radius:18px; padding:16px; box-shadow:var(--shadow)}
+    .card.soft{background:var(--panel-soft)}.card h3,.card h4{margin-top:0; margin-bottom:10px; color:#fff}
+    label{display:block; margin:10px 0 6px; color:var(--muted); font-size:14px; text-align:left}
+    input,select,textarea{width:100%; border-radius:12px; border:1px solid #3f2d22; background:#120d0a; color:#fff; padding:11px 12px; outline:none}
+    input:focus,select:focus,textarea:focus{border-color:var(--accent); box-shadow:0 0 0 2px rgba(255,106,0,.15)}
+    textarea{min-height:90px; resize:vertical}
+    .product-box{background:#16100c; border:1px solid #3a291f; border-radius:16px; padding:14px}
+    .product-box .price{color:var(--accent2); font-weight:bold; margin-bottom:10px; display:block}
+    .actions{display:flex; gap:10px; flex-wrap:wrap; margin-top:12px}
+    button.btn{border:none; padding:11px 14px; border-radius:12px; cursor:pointer; font-weight:bold; transition:.2s ease}
+    .btn-primary{background:linear-gradient(90deg,var(--accent),var(--accent3)); color:#fff}.btn-secondary{background:#2a1f19; color:#fff; border:1px solid #413028}
+    .btn-ok{background:var(--ok); color:#fff}.btn-danger{background:var(--danger); color:#fff}.btn-outline{background:transparent; color:#fff; border:1px solid #5b4334}
+    button.btn:hover{transform:translateY(-1px); opacity:.96}.summary{background:linear-gradient(180deg, rgba(255,106,0,.08), rgba(255,255,255,.01))}
+    .summary-list{margin:0; padding-left:18px}.summary-list li{margin-bottom:8px}
+    .line{display:flex; justify-content:space-between; gap:12px; padding:7px 0; border-bottom:1px dashed rgba(255,255,255,.08); color:var(--muted)}
+    .line strong{color:#fff}.line.total{font-size:1.2rem; font-weight:bold; color:#fff; border-bottom:none; margin-top:8px}
+    .badge{display:inline-block; padding:5px 10px; border-radius:999px; font-size:12px; font-weight:bold}
+    .badge.ok{background:rgba(46,204,113,.15); color:#85f5b3}.badge.warn{background:rgba(255,179,71,.15); color:#ffcf85}.badge.out{background:rgba(255,77,79,.14); color:#ff9a9b}
+    table{width:100%; border-collapse:collapse; margin-top:10px; overflow:hidden; border-radius:14px}
+    th,td{border:1px solid rgba(255,255,255,.06); padding:10px; font-size:14px; text-align:left} th{background:#221812; color:var(--accent2)} td{background:#140f0c; vertical-align:top}
+    .muted{color:var(--muted); font-size:14px}.center{text-align:center}.spacer{height:10px}.hidden{display:none!important}
+    .login-overlay{position:fixed; inset:0; background:rgba(9,7,6,.96); z-index:9999; display:flex; align-items:center; justify-content:center; padding:20px}
+    .login-card{width:100%; max-width:420px; background:linear-gradient(180deg, rgba(255,106,0,.08), rgba(255,255,255,.01)),var(--panel); border:1px solid var(--line); border-radius:22px; padding:22px; box-shadow:var(--shadow)}
+    .login-card img{width:90px; height:90px; object-fit:contain; display:block; margin:0 auto 14px auto; border-radius:16px; background:rgba(255,255,255,.03); padding:6px}
+    .login-card h2{text-align:center; margin-top:0; margin-bottom:8px}.login-card p{text-align:center; color:var(--muted); margin-top:0; margin-bottom:14px}
+    .error-msg{color:#ff9a9b; font-size:13px; margin-top:10px; text-align:center; min-height:18px}
+    @media(max-width:700px){.brand h1{font-size:1.2rem}.tabs{width:100%}.tabs button{flex:1}}
   </style>
 </head>
 <body>
-
   <div id="loginOverlay" class="login-overlay">
     <div class="login-card">
       <img src="logo.png" alt="Ramen & Fuego">
-      <h2>Ingreso</h2>
-      <p>Accede con tu usuario para comenzar a vender</p>
-
-      <label>Usuario</label>
-      <select id="loginUsuario">
-        <option value="">Selecciona usuario</option>
-        <option value="Exequiel">Exequiel</option>
-        <option value="Ana María">Ana María</option>
-        <option value="Angelo">Angelo</option>
-      </select>
-
-      <label>Password</label>
-      <input id="loginPassword" type="password" placeholder="Password">
-
-      <div class="actions">
-        <button class="btn btn-primary" onclick="login()">Ingresar</button>
-      </div>
-
+      <h2>Ingreso</h2><p>Accede con tu usuario para comenzar a vender</p>
+      <label>Usuario</label><select id="loginUsuario"><option value="">Selecciona usuario</option><option value="Exequiel">Exequiel</option><option value="Ana María">Ana María</option><option value="Angelo">Angelo</option></select>
+      <label>Password</label><input id="loginPassword" type="password" placeholder="Password">
+      <div class="actions"><button class="btn btn-primary" onclick="login()">Ingresar</button></div>
       <div id="loginError" class="error-msg"></div>
     </div>
   </div>
 
   <header>
     <div class="header-inner">
-      <div class="brand">
-        <img src="logo.png" alt="Ramen & Fuego">
-        <div class="brand-meta">
-          <div>
-            <h1>Ramen & Fuego</h1>
-            <small>¡Sabor que prende!</small>
-          </div>
-          <div class="brand-user">Atendido por: <strong id="usuarioActivoHeader">—</strong></div>
-        </div>
-      </div>
-
+      <div class="brand"><img src="logo.png" alt="Ramen & Fuego"><div class="brand-meta"><div><h1>Ramen & Fuego</h1><small>¡Sabor que prende!</small></div><div class="brand-user">Atendido por: <strong id="usuarioActivoHeader">—</strong></div></div></div>
       <div class="header-right">
         <div class="tabs">
           <button class="active" onclick="showSection('pedidos', this)">Pedidos</button>
+          <button onclick="showSection('wok', this)">Fideos al Wok</button>
           <button onclick="showSection('stock', this)">Stock</button>
           <button onclick="showSection('precios', this)">Precios</button>
           <button onclick="showSection('historial', this)">Historial</button>
@@ -484,1170 +95,138 @@
   </header>
 
   <div class="container">
-
     <section id="pedidos" class="section active">
-      <div class="hero">
-        <h2>Panel de pedidos</h2>
-        <p>Arma el pedido, calcula delivery, aplica promo y genera dos tickets con impresión.</p>
-      </div>
-
+      <div class="hero"><h2>Panel de pedidos</h2><p>Arma el pedido, calcula delivery, aplica promo y genera dos tickets con impresión.</p></div>
       <div class="grid">
         <div class="card">
           <h3>Datos del cliente</h3>
-
-          <label>Nombre del cliente</label>
-          <input id="clienteNombre" placeholder="Ej: Juan Pérez" oninput="autoSaveDraft()">
-
-          <label>Dirección</label>
-          <input id="clienteDireccion" placeholder="Ej: Los Aromos 123" oninput="autoSaveDraft()">
-
-          <label>Comuna / modalidad</label>
-          <select id="clienteComuna" onchange="updateSummary()">
-            <option value="0">Retiro en local (sin costo)</option>
-            <option value="1000">El Rincón / La Punta / Los Marcos</option>
-            <option value="2500">Codegua</option>
-            <option value="4000">Graneros / San Francisco</option>
-          </select>
-
-          <label>Atendido por</label>
-          <input id="atendidoPorView" readonly>
-
-          <label>Medio de pago</label>
-          <select id="medioPago" onchange="autoSaveDraft()">
-            <option>Transferencia</option>
-            <option>Efectivo</option>
-            <option>Débito</option>
-            <option>Crédito</option>
-          </select>
-
-          <label>Observaciones</label>
-          <textarea id="observaciones" placeholder="Ej: con picante, sin cebollín..." oninput="autoSaveDraft()"></textarea>
-
-          <div class="actions">
-            <label style="display:flex; align-items:center; gap:8px; margin:0;">
-              <input type="checkbox" id="promoDelivery" style="width:auto;" onchange="updateSummary()">
-              <span>Activar promo delivery 50% sobre $20.000</span>
-            </label>
-          </div>
+          <label>Nombre del cliente</label><input id="clienteNombre" placeholder="Ej: Juan Pérez" oninput="autoSaveDraft()">
+          <label>Dirección</label><input id="clienteDireccion" placeholder="Ej: Los Aromos 123" oninput="autoSaveDraft()">
+          <label>Comuna / modalidad</label><select id="clienteComuna" onchange="updateSummary()"><option value="0">Retiro en local (sin costo)</option><option value="1000">El Rincón / La Punta / Los Marcos</option><option value="2500">Codegua</option><option value="4000">Graneros / San Francisco</option></select>
+          <label>Atendido por</label><input id="atendidoPorView" readonly>
+          <label>Medio de pago</label><select id="medioPago" onchange="autoSaveDraft()"><option>Transferencia</option><option>Efectivo</option><option>Débito</option><option>Crédito</option></select>
+          <label>Observaciones</label><textarea id="observaciones" placeholder="Ej: con picante, sin cebollín..." oninput="autoSaveDraft()"></textarea>
+          <div class="actions"><label style="display:flex; align-items:center; gap:8px; margin:0;"><input type="checkbox" id="promoDelivery" style="width:auto;" onchange="updateSummary()"><span>Activar promo delivery 50% sobre $20.000</span></label></div>
         </div>
-
         <div class="card summary">
-          <h3>Resumen del pedido</h3>
-          <ul id="pedidoLista" class="summary-list"></ul>
-
+          <h3>Resumen del pedido</h3><ul id="pedidoLista" class="summary-list"></ul>
           <div class="line"><span>Stock pollo restante</span><strong id="stockPolloTxt"></strong></div>
           <div class="line"><span>Stock cerdo restante</span><strong id="stockCerdoTxt"></strong></div>
           <div class="line"><span>Stock vegetariano restante</span><strong id="stockVegetarianoTxt"></strong></div>
-          <div class="line"><span>Subtotal</span><strong id="subtotalTxt">$0</strong></div>
-          <div class="line"><span>Delivery</span><strong id="deliveryTxt">$0</strong></div>
-          <div class="line"><span>Descuento delivery</span><strong id="descuentoTxt">-$0</strong></div>
-          <div class="line total"><span>Total</span><span id="totalTxt">$0</span></div>
-
-          <div class="actions">
-            <button class="btn btn-primary" onclick="finalizarPedido()">Finalizar pedido</button>
-            <button class="btn btn-secondary" onclick="limpiarPedido()">Limpiar pedido</button>
-            <button class="btn btn-outline" onclick="reimprimirUltimoTicket()">Reimprimir último ticket</button>
-          </div>
+          <div class="line"><span>Subtotal</span><strong id="subtotalTxt">$0</strong></div><div class="line"><span>Delivery</span><strong id="deliveryTxt">$0</strong></div><div class="line"><span>Descuento delivery</span><strong id="descuentoTxt">-$0</strong></div><div class="line total"><span>Total</span><span id="totalTxt">$0</span></div>
+          <div class="actions"><button class="btn btn-primary" onclick="finalizarPedido()">Finalizar pedido</button><button class="btn btn-secondary" onclick="limpiarPedido()">Limpiar pedido</button><button class="btn btn-outline" onclick="reimprimirUltimoTicket()">Reimprimir último ticket</button></div>
         </div>
       </div>
 
       <div class="spacer"></div>
-
       <div class="grid">
-        <div class="card soft product-box">
-          <h4>Ramen Pollo</h4>
-          <span class="price">$<span id="pricePolloView"></span></span>
-          <button class="btn btn-primary" onclick="addSimpleRamen('pollo')">Agregar</button>
-        </div>
-
-        <div class="card soft product-box">
-          <h4>Ramen Cerdo</h4>
-          <span class="price">$<span id="priceCerdoView"></span></span>
-          <button class="btn btn-primary" onclick="addSimpleRamen('cerdo')">Agregar</button>
-        </div>
-
-        <div class="card soft product-box">
-          <h4>Ramen Vegetariano</h4>
-          <span class="price">$<span id="priceVegetarianoView"></span></span>
-          <button class="btn btn-primary" onclick="addSimpleRamen('vegetariano')">Agregar</button>
-        </div>
+        <div class="card soft product-box"><h4>Ramen Pollo</h4><span class="price">$<span id="pricePolloView"></span></span><button class="btn btn-primary" onclick="addSimpleRamen('pollo')">Agregar</button></div>
+        <div class="card soft product-box"><h4>Ramen Cerdo</h4><span class="price">$<span id="priceCerdoView"></span></span><button class="btn btn-primary" onclick="addSimpleRamen('cerdo')">Agregar</button></div>
+        <div class="card soft product-box"><h4>Ramen Vegetariano</h4><span class="price">$<span id="priceVegetarianoView"></span></span><button class="btn btn-primary" onclick="addSimpleRamen('vegetariano')">Agregar</button></div>
       </div>
 
       <div class="spacer"></div>
-
       <div class="grid">
-        <div class="card soft">
-          <h4>Combo Ramen + Bebida</h4>
-          <label>Tipo de ramen</label>
-          <select id="comboRB_ramen">
-            <option value="pollo">Pollo</option>
-            <option value="cerdo">Cerdo</option>
-            <option value="vegetariano">Vegetariano</option>
-          </select>
-
-          <label>Bebida</label>
-          <select id="comboRB_bebida">
-            <option>Pepsi</option>
-            <option>Limón Soda</option>
-            <option>Bilz</option>
-            <option>Pap</option>
-            <option>Kem Piña</option>
-          </select>
-
-          <div class="muted">Precio: $<span id="priceComboRBView"></span></div>
-          <div class="actions">
-            <button class="btn btn-primary" onclick="addComboRB()">Agregar combo</button>
-          </div>
-        </div>
-
-        <div class="card soft">
-          <h4>Combo Ramen + Gyozas</h4>
-          <label>Tipo de ramen</label>
-          <select id="comboRG_ramen">
-            <option value="pollo">Pollo</option>
-            <option value="cerdo">Cerdo</option>
-            <option value="vegetariano">Vegetariano</option>
-          </select>
-
-          <label>Tipo de gyozas</label>
-          <select id="comboRG_gyoza">
-            <option>Pollo</option>
-            <option>Cerdo</option>
-            <option>Camarón</option>
-          </select>
-
-          <div class="muted">Precio: $<span id="priceComboRGView"></span></div>
-          <div class="actions">
-            <button class="btn btn-primary" onclick="addComboRG()">Agregar combo</button>
-          </div>
-        </div>
-
-        <div class="card soft">
-          <h4>Combo Ramen + Bebida + Gyozas</h4>
-          <label>Tipo de ramen</label>
-          <select id="comboFull_ramen">
-            <option value="pollo">Pollo</option>
-            <option value="cerdo">Cerdo</option>
-            <option value="vegetariano">Vegetariano</option>
-          </select>
-
-          <label>Bebida</label>
-          <select id="comboFull_bebida">
-            <option>Pepsi</option>
-            <option>Limón Soda</option>
-            <option>Bilz</option>
-            <option>Pap</option>
-            <option>Kem Piña</option>
-          </select>
-
-          <label>Tipo de gyozas</label>
-          <select id="comboFull_gyoza">
-            <option>Pollo</option>
-            <option>Cerdo</option>
-            <option>Camarón</option>
-          </select>
-
-          <div class="muted">Precio: $<span id="priceComboFullView"></span></div>
-          <div class="actions">
-            <button class="btn btn-primary" onclick="addComboFull()">Agregar combo</button>
-          </div>
-        </div>
+        <div class="card soft"><h4>Combo Ramen + Bebida</h4><label>Tipo de ramen</label><select id="comboRB_ramen"><option value="pollo">Pollo</option><option value="cerdo">Cerdo</option><option value="vegetariano">Vegetariano</option></select><label>Bebida</label><select id="comboRB_bebida"><option>Pepsi</option><option>Limón Soda</option><option>Bilz</option><option>Pap</option><option>Kem Piña</option></select><div class="muted">Precio: $<span id="priceComboRBView"></span></div><div class="actions"><button class="btn btn-primary" onclick="addComboRB()">Agregar combo</button></div></div>
+        <div class="card soft"><h4>Combo Ramen + Gyozas</h4><label>Tipo de ramen</label><select id="comboRG_ramen"><option value="pollo">Pollo</option><option value="cerdo">Cerdo</option><option value="vegetariano">Vegetariano</option></select><label>Tipo de gyozas</label><select id="comboRG_gyoza"><option>Pollo</option><option>Cerdo</option><option>Camarón</option></select><div class="muted">Precio: $<span id="priceComboRGView"></span></div><div class="actions"><button class="btn btn-primary" onclick="addComboRG()">Agregar combo</button></div></div>
+        <div class="card soft"><h4>Combo Ramen + Bebida + Gyozas</h4><label>Tipo de ramen</label><select id="comboFull_ramen"><option value="pollo">Pollo</option><option value="cerdo">Cerdo</option><option value="vegetariano">Vegetariano</option></select><label>Bebida</label><select id="comboFull_bebida"><option>Pepsi</option><option>Limón Soda</option><option>Bilz</option><option>Pap</option><option>Kem Piña</option></select><label>Tipo de gyozas</label><select id="comboFull_gyoza"><option>Pollo</option><option>Cerdo</option><option>Camarón</option></select><div class="muted">Precio: $<span id="priceComboFullView"></span></div><div class="actions"><button class="btn btn-primary" onclick="addComboFull()">Agregar combo</button></div></div>
       </div>
-
       <div class="spacer"></div>
+      <div class="card soft"><h4>Extras</h4><div class="actions"><button class="btn btn-secondary" onclick="addExtra('Huevo extra', 500)">Huevo extra +$500</button><button class="btn btn-secondary" onclick="addExtra('Picante especial', 500)">Picante especial +$500</button><button class="btn btn-secondary" onclick="addExtra('Extra carne', 1000)">Extra carne +$1.000</button></div></div>
+    </section>
 
-      <div class="card soft">
-        <h4>Extras</h4>
-        <div class="actions">
-          <button class="btn btn-secondary" onclick="addExtra('Huevo extra', 500)">Huevo extra +$500</button>
-          <button class="btn btn-secondary" onclick="addExtra('Picante especial', 500)">Picante especial +$500</button>
-          <button class="btn btn-secondary" onclick="addExtra('Extra carne', 1000)">Extra carne +$1.000</button>
-        </div>
+    <section id="wok" class="section">
+      <div class="hero"><h2>Fideos al Wok</h2><p>Agrega fideos al wok individuales o combos con gyozas. Puedes agregar bebida al combo por $1.000.</p></div>
+      <div class="grid">
+        <div class="card soft product-box"><h4>Fideos al Wok Pollo</h4><span class="price">$<span id="priceWokPolloView"></span></span><button class="btn btn-primary" onclick="addWok('pollo')">Agregar</button></div>
+        <div class="card soft product-box"><h4>Fideos al Wok Cerdo</h4><span class="price">$<span id="priceWokCerdoView"></span></span><button class="btn btn-primary" onclick="addWok('cerdo')">Agregar</button></div>
+        <div class="card soft product-box"><h4>Fideos al Wok Mixto</h4><span class="price">$<span id="priceWokMixtoView"></span></span><button class="btn btn-primary" onclick="addWok('mixto')">Agregar</button></div>
+        <div class="card soft product-box"><h4>Fideos al Wok Vegetariano</h4><span class="price">$<span id="priceWokVegetarianoView"></span></span><button class="btn btn-primary" onclick="addWok('vegetariano')">Agregar</button></div>
+      </div>
+      <div class="spacer"></div>
+      <div class="grid">
+        <div class="card soft"><h4>Pollo + Gyozas</h4><div class="muted">Precio: $<span id="priceWokComboPolloView"></span></div><label style="display:flex;align-items:center;gap:8px;"><input type="checkbox" id="wokComboPolloBebida" style="width:auto;"> Agregar bebida +$1.000</label><button class="btn btn-primary" onclick="addWokCombo('pollo')">Agregar combo</button></div>
+        <div class="card soft"><h4>Cerdo + Gyozas</h4><div class="muted">Precio: $<span id="priceWokComboCerdoView"></span></div><label style="display:flex;align-items:center;gap:8px;"><input type="checkbox" id="wokComboCerdoBebida" style="width:auto;"> Agregar bebida +$1.000</label><button class="btn btn-primary" onclick="addWokCombo('cerdo')">Agregar combo</button></div>
+        <div class="card soft"><h4>Mixto + Gyozas</h4><div class="muted">Precio: $<span id="priceWokComboMixtoView"></span></div><label style="display:flex;align-items:center;gap:8px;"><input type="checkbox" id="wokComboMixtoBebida" style="width:auto;"> Agregar bebida +$1.000</label><button class="btn btn-primary" onclick="addWokCombo('mixto')">Agregar combo</button></div>
+        <div class="card soft"><h4>Vegetariano + Gyozas</h4><div class="muted">Precio: $<span id="priceWokComboVegetarianoView"></span></div><label style="display:flex;align-items:center;gap:8px;"><input type="checkbox" id="wokComboVegetarianoBebida" style="width:auto;"> Agregar bebida +$1.000</label><button class="btn btn-primary" onclick="addWokCombo('vegetariano')">Agregar combo</button></div>
       </div>
     </section>
 
     <section id="stock" class="section">
-      <div class="hero">
-        <h2>Control de stock</h2>
-        <p>Edita el stock disponible para pollo, cerdo y vegetariano. Si llega a 0, no permitirá vender.</p>
-      </div>
-
-      <div class="card">
-        <div class="grid">
-          <div>
-            <label>Stock ramen pollo</label>
-            <input id="stockPollo" type="number" min="0">
-          </div>
-          <div>
-            <label>Stock ramen cerdo</label>
-            <input id="stockCerdo" type="number" min="0">
-          </div>
-          <div>
-            <label>Stock ramen vegetariano</label>
-            <input id="stockVegetariano" type="number" min="0">
-          </div>
-        </div>
-
-        <div class="actions">
-          <button class="btn btn-primary" onclick="saveStock()">Guardar stock</button>
-          <button class="btn btn-secondary" onclick="resetStock()">Restablecer stock base</button>
-        </div>
-      </div>
+      <div class="hero"><h2>Control de stock</h2><p>Edita el stock disponible para pollo, cerdo y vegetariano. Si llega a 0, no permitirá vender ramen.</p></div>
+      <div class="card"><div class="grid"><div><label>Stock ramen pollo</label><input id="stockPollo" type="number" min="0"></div><div><label>Stock ramen cerdo</label><input id="stockCerdo" type="number" min="0"></div><div><label>Stock ramen vegetariano</label><input id="stockVegetariano" type="number" min="0"></div></div><div class="actions"><button class="btn btn-primary" onclick="saveStock()">Guardar stock</button><button class="btn btn-secondary" onclick="resetStock()">Restablecer stock base</button></div></div>
     </section>
 
     <section id="precios" class="section">
-      <div class="hero">
-        <h2>Configuración de precios</h2>
-        <p>Ajusta precios sin tocar el código. Ideal para subir o bajar valores rápido.</p>
-      </div>
-
-      <div class="card">
-        <div class="grid">
-          <div>
-            <label>Ramen Pollo</label>
-            <input id="precioPollo" type="number" min="0">
-          </div>
-          <div>
-            <label>Ramen Cerdo</label>
-            <input id="precioCerdo" type="number" min="0">
-          </div>
-          <div>
-            <label>Combo Ramen + Bebida</label>
-            <input id="precioComboRB" type="number" min="0">
-          </div>
-          <div>
-            <label>Combo Ramen + Gyozas</label>
-            <input id="precioComboRG" type="number" min="0">
-          </div>
-          <div>
-            <label>Combo Full</label>
-            <input id="precioComboFull" type="number" min="0">
-          </div>
-        </div>
-
-        <div class="actions">
-          <button class="btn btn-primary" onclick="savePrices()">Guardar precios</button>
-        </div>
-      </div>
+      <div class="hero"><h2>Configuración de precios</h2><p>Ajusta precios sin tocar el código. Ideal para subir o bajar valores rápido.</p></div>
+      <div class="card"><h3>Ramen y combos</h3><div class="grid"><div><label>Ramen Pollo</label><input id="precioPollo" type="number" min="0"></div><div><label>Ramen Cerdo</label><input id="precioCerdo" type="number" min="0"></div><div><label>Combo Ramen + Bebida</label><input id="precioComboRB" type="number" min="0"></div><div><label>Combo Ramen + Gyozas</label><input id="precioComboRG" type="number" min="0"></div><div><label>Combo Full</label><input id="precioComboFull" type="number" min="0"></div></div><div class="spacer"></div><h3>Fideos al Wok</h3><div class="grid"><div><label>Wok Pollo</label><input id="precioWokPollo" type="number" min="0"></div><div><label>Wok Cerdo</label><input id="precioWokCerdo" type="number" min="0"></div><div><label>Wok Mixto</label><input id="precioWokMixto" type="number" min="0"></div><div><label>Wok Vegetariano</label><input id="precioWokVegetariano" type="number" min="0"></div><div><label>Combo Wok Pollo + Gyozas</label><input id="precioWokComboPollo" type="number" min="0"></div><div><label>Combo Wok Cerdo + Gyozas</label><input id="precioWokComboCerdo" type="number" min="0"></div><div><label>Combo Wok Mixto + Gyozas</label><input id="precioWokComboMixto" type="number" min="0"></div><div><label>Combo Wok Vegetariano + Gyozas</label><input id="precioWokComboVegetariano" type="number" min="0"></div><div><label>Agregar bebida a combo Wok</label><input id="precioWokBebidaExtra" type="number" min="0"></div></div><div class="actions"><button class="btn btn-primary" onclick="savePrices()">Guardar precios</button></div></div>
     </section>
 
-    <section id="historial" class="section">
-      <div class="hero">
-        <h2>Historial de ventas</h2>
-        <p>Revisa los pedidos guardados en este dispositivo y reimprime si hace falta.</p>
-      </div>
-
-      <div class="card">
-        <div id="historialContenido"></div>
-      </div>
-    </section>
-
-    <section id="cierre" class="section">
-      <div class="hero">
-        <h2>Cierre de día</h2>
-        <p>Obtén resumen de ventas y exporta el Excel con costo y margen estimado.</p>
-      </div>
-
-      <div class="card">
-        <div class="actions">
-          <button class="btn btn-primary" onclick="mostrarResumenCierre()">Ver resumen</button>
-          <button class="btn btn-secondary" onclick="renderUltimosCierres()">Ver cierre automático</button>
-          <button class="btn btn-ok" onclick="exportExcel()">Exportar Excel</button>
-        </div>
-
-        <div class="spacer"></div>
-        <div id="resumenCierre"></div>
-      </div>
-    </section>
-
+    <section id="historial" class="section"><div class="hero"><h2>Historial de ventas</h2><p>Revisa los pedidos guardados en este dispositivo y reimprime si hace falta.</p></div><div class="card"><div id="historialContenido"></div></div></section>
+    <section id="cierre" class="section"><div class="hero"><h2>Cierre de día</h2><p>Obtén resumen de ventas y exporta el Excel con costo y margen estimado.</p></div><div class="card"><div class="actions"><button class="btn btn-primary" onclick="mostrarResumenCierre()">Ver resumen</button><button class="btn btn-secondary" onclick="renderUltimosCierres()">Ver cierre automático</button><button class="btn btn-ok" onclick="exportExcel()">Exportar Excel</button></div><div class="spacer"></div><div id="resumenCierre"></div></div></section>
   </div>
 
   <script>
-    const STORAGE_KEYS = {
-      stock: 'ryf_stock_v6',
-      prices: 'ryf_prices_v6',
-      sales: 'ryf_sales_v6',
-      folio: 'ryf_folio_v6',
-      sessionUser: 'ryf_session_user_v6',
-      lastOrder: 'ryf_last_order_v6',
-      draft: 'ryf_draft_v3',
-      closures: 'ryf_closures_v1',
-      lastAccessDate: 'ryf_last_access_date_v1'
-    };
-
-    const USERS = {
-      "Exequiel": "190309",
-      "Ana María": "170783",
-      "Angelo": "010783"
-    };
-
-    const defaultStock = { pollo: 15, cerdo: 15, vegetariano: 5 };
-    const defaultPrices = {
-      ramenPollo: 5500,
-      ramenCerdo: 5500,
-      comboRB: 6500,
-      comboRG: 7500,
-      comboFull: 9000
-    };
-
-    let stock = loadJSON(STORAGE_KEYS.stock, defaultStock);
-    let prices = loadJSON(STORAGE_KEYS.prices, defaultPrices);
-    let sales = loadJSON(STORAGE_KEYS.sales, []);
-    let currentOrder = [];
-    let currentUser = "";
-    let lastOrder = loadJSON(STORAGE_KEYS.lastOrder, null);
-    let printingInProgress = false;
-
-    window.addEventListener("beforeunload", function (e) {
-      if (currentOrder.length > 0 || printingInProgress) {
-        e.preventDefault();
-        e.returnValue = "";
-      }
-    });
-
+    const STORAGE_KEYS={stock:'ryf_stock_v7',prices:'ryf_prices_v7',sales:'ryf_sales_v7',folio:'ryf_folio_v7',sessionUser:'ryf_session_user_v7',lastOrder:'ryf_last_order_v7',draft:'ryf_draft_v4',closures:'ryf_closures_v1',lastAccessDate:'ryf_last_access_date_v1'};
+    const USERS={"Exequiel":"190309","Ana María":"170783","Angelo":"010783"};
+    const defaultStock={pollo:15,cerdo:15,vegetariano:5};
+    const defaultPrices={ramenPollo:5500,ramenCerdo:5500,comboRB:6500,comboRG:7490,comboFull:8990,wokPollo:7000,wokCerdo:7500,wokMixto:8500,wokVegetariano:7000,wokComboPollo:9490,wokComboCerdo:9990,wokComboMixto:10990,wokComboVegetariano:9490,wokBebidaExtra:1000};
+    let stock=loadJSON(STORAGE_KEYS.stock,defaultStock),prices=loadJSON(STORAGE_KEYS.prices,defaultPrices),sales=loadJSON(STORAGE_KEYS.sales,[]),currentOrder=[],currentUser="",lastOrder=loadJSON(STORAGE_KEYS.lastOrder,null),printingInProgress=false;
+    window.addEventListener("beforeunload",function(e){if(currentOrder.length>0||printingInProgress){e.preventDefault();e.returnValue=""}});
     init();
-
-    function init(){
-      revisarCambioDeDia();
-      fillSettings();
-      updatePriceViews();
-      loadDraft();
-      updateSummary();
-      renderHistory();
-      localStorage.removeItem(STORAGE_KEYS.sessionUser);
-      restoreSession();
-    }
-
-    function restoreSession(){
-      if(currentUser){
-        document.getElementById('loginOverlay').classList.add('hidden');
-        document.getElementById('usuarioActivoHeader').textContent = currentUser;
-        document.getElementById('atendidoPorView').value = currentUser;
-      } else {
-        document.getElementById('loginOverlay').classList.remove('hidden');
-        document.getElementById('usuarioActivoHeader').textContent = '—';
-        document.getElementById('atendidoPorView').value = '';
-      }
-    }
-
-    function login(){
-      const user = document.getElementById('loginUsuario').value;
-      const pass = document.getElementById('loginPassword').value;
-      const error = document.getElementById('loginError');
-
-      if(!user || !pass){
-        error.textContent = 'Ingresa usuario y password.';
-        return;
-      }
-
-      if(USERS[user] !== pass){
-        error.textContent = 'Credenciales incorrectas.';
-        return;
-      }
-
-      currentUser = user;
-      document.getElementById('usuarioActivoHeader').textContent = currentUser;
-      document.getElementById('atendidoPorView').value = currentUser;
-      document.getElementById('loginOverlay').classList.add('hidden');
-      document.getElementById('loginPassword').value = '';
-      error.textContent = '';
-      autoSaveDraft();
-    }
-
-    function cerrarSesion(){
-      generarCierreAutomaticoDelDia();
-      currentUser = "";
-      localStorage.removeItem(STORAGE_KEYS.sessionUser);
-      document.getElementById('usuarioActivoHeader').textContent = '—';
-      document.getElementById('atendidoPorView').value = '';
-      document.getElementById('loginUsuario').value = '';
-      document.getElementById('loginPassword').value = '';
-      document.getElementById('loginOverlay').classList.remove('hidden');
-    }
-
-    function loadJSON(key, fallback){
-      try{
-        const raw = localStorage.getItem(key);
-        return raw ? JSON.parse(raw) : fallback;
-      } catch {
-        return fallback;
-      }
-    }
-
-    function saveJSON(key, value){
-      localStorage.setItem(key, JSON.stringify(value));
-    }
-
-    function hoyISO(){
-      const now = new Date();
-      return now.toISOString().slice(0, 10);
-    }
-
-    function fechaCLAISO(fechaCL){
-      if (!fechaCL) return '';
-      const sep = fechaCL.includes('/') ? '/' : '-';
-      const parts = fechaCL.split(sep);
-      if (parts.length !== 3) return '';
-      const [dd, mm, yyyy] = parts;
-      return `${yyyy}-${mm.padStart(2,'0')}-${dd.padStart(2,'0')}`;
-    }
-
-    function generarCierreAutomaticoDelDia(fechaObjetivo = null){
-      const closures = loadJSON(STORAGE_KEYS.closures, []);
-      const fechaISO = fechaObjetivo || hoyISO();
-
-      if (closures.some(c => c.fechaISO === fechaISO)) return;
-
-      const ventasDelDia = sales.filter(s => fechaCLAISO(s.fecha) === fechaISO);
-      if (!ventasDelDia.length) return;
-
-      const totalVentas = ventasDelDia.reduce((a,b) => a + b.total, 0);
-      const totalDelivery = ventasDelDia.reduce((a,b) => a + b.delivery, 0);
-      const totalDescuentos = ventasDelDia.reduce((a,b) => a + b.descuento, 0);
-      const costoEstimado = ventasDelDia.reduce((sum, sale) => sum + estimateInternalCost(sale), 0);
-      const margen = totalVentas - costoEstimado;
-
-      closures.push({
-        fechaISO,
-        pedidos: ventasDelDia.length,
-        totalVentas,
-        totalDelivery,
-        totalDescuentos,
-        costoEstimado,
-        margen,
-        creadoEn: new Date().toISOString()
-      });
-
-      saveJSON(STORAGE_KEYS.closures, closures);
-    }
-
-    function revisarCambioDeDia(){
-      const lastAccess = localStorage.getItem(STORAGE_KEYS.lastAccessDate);
-      const hoy = hoyISO();
-
-      if (!lastAccess) {
-        localStorage.setItem(STORAGE_KEYS.lastAccessDate, hoy);
-        return;
-      }
-
-      if (lastAccess !== hoy) {
-        generarCierreAutomaticoDelDia(lastAccess);
-        localStorage.setItem(STORAGE_KEYS.lastAccessDate, hoy);
-      }
-    }
-
-    function autoSaveDraft(){
-      const draft = {
-        cliente: document.getElementById('clienteNombre').value,
-        direccion: document.getElementById('clienteDireccion').value,
-        comuna: document.getElementById('clienteComuna').value,
-        medioPago: document.getElementById('medioPago').value,
-        observaciones: document.getElementById('observaciones').value,
-        promoDelivery: document.getElementById('promoDelivery').checked,
-        items: currentOrder
-      };
-      saveJSON(STORAGE_KEYS.draft, draft);
-    }
-
-    function loadDraft(){
-      const draft = loadJSON(STORAGE_KEYS.draft, null);
-      if(!draft) return;
-
-      document.getElementById('clienteNombre').value = draft.cliente || '';
-      document.getElementById('clienteDireccion').value = draft.direccion || '';
-      document.getElementById('clienteComuna').value = draft.comuna || '0';
-      document.getElementById('medioPago').value = draft.medioPago || 'Transferencia';
-      document.getElementById('observaciones').value = draft.observaciones || '';
-      document.getElementById('promoDelivery').checked = !!draft.promoDelivery;
-      currentOrder = draft.items || [];
-    }
-
-    function showSection(id, btn){
-      document.querySelectorAll('.section').forEach(sec => sec.classList.remove('active'));
-      document.getElementById(id).classList.add('active');
-
-      document.querySelectorAll('.tabs button').forEach(b => b.classList.remove('active'));
-      btn.classList.add('active');
-
-      if(id === 'historial') renderHistory();
-    }
-
-    function fillSettings(){
-      document.getElementById('stockPollo').value = stock.pollo;
-      document.getElementById('stockCerdo').value = stock.cerdo;
-      document.getElementById('stockVegetariano').value = stock.vegetariano;
-
-      document.getElementById('precioPollo').value = prices.ramenPollo;
-      document.getElementById('precioCerdo').value = prices.ramenCerdo;
-      document.getElementById('precioComboRB').value = prices.comboRB;
-      document.getElementById('precioComboRG').value = prices.comboRG;
-      document.getElementById('precioComboFull').value = prices.comboFull;
-    }
-
-    function updatePriceViews(){
-      document.getElementById('pricePolloView').textContent = formatCLP(prices.ramenPollo);
-      document.getElementById('priceCerdoView').textContent = formatCLP(prices.ramenCerdo);
-      document.getElementById('priceVegetarianoView').textContent = formatCLP(prices.ramenPollo);
-      document.getElementById('priceComboRBView').textContent = formatCLP(prices.comboRB);
-      document.getElementById('priceComboRGView').textContent = formatCLP(prices.comboRG);
-      document.getElementById('priceComboFullView').textContent = formatCLP(prices.comboFull);
-    }
-
-    function saveStock(){
-      stock.pollo = Math.max(0, parseInt(document.getElementById('stockPollo').value || '0', 10));
-      stock.cerdo = Math.max(0, parseInt(document.getElementById('stockCerdo').value || '0', 10));
-      stock.vegetariano = Math.max(0, parseInt(document.getElementById('stockVegetariano').value || '0', 10));
-      saveJSON(STORAGE_KEYS.stock, stock);
-      fillSettings();
-      updateSummary();
-      alert('Stock guardado');
-    }
-
-    function resetStock(){
-      stock = { pollo: 15, cerdo: 15, vegetariano: 5 };
-      saveJSON(STORAGE_KEYS.stock, stock);
-      fillSettings();
-      updateSummary();
-      alert('Stock restablecido');
-    }
-
-    function savePrices(){
-      prices.ramenPollo = Math.max(0, parseInt(document.getElementById('precioPollo').value || '0', 10));
-      prices.ramenCerdo = Math.max(0, parseInt(document.getElementById('precioCerdo').value || '0', 10));
-      prices.comboRB = Math.max(0, parseInt(document.getElementById('precioComboRB').value || '0', 10));
-      prices.comboRG = Math.max(0, parseInt(document.getElementById('precioComboRG').value || '0', 10));
-      prices.comboFull = Math.max(0, parseInt(document.getElementById('precioComboFull').value || '0', 10));
-      saveJSON(STORAGE_KEYS.prices, prices);
-      updatePriceViews();
-      updateSummary();
-      alert('Precios guardados');
-    }
-
-    function addSimpleRamen(type){
-      if(type === 'pollo' && getRemainingStock('pollo') <= 0){
-        alert('No queda stock de ramen pollo');
-        return;
-      }
-      if(type === 'cerdo' && getRemainingStock('cerdo') <= 0){
-        alert('No queda stock de ramen cerdo');
-        return;
-      }
-      if(type === 'vegetariano' && getRemainingStock('vegetariano') <= 0){
-        alert('No queda stock de ramen vegetariano');
-        return;
-      }
-
-      currentOrder.push({
-        type: 'simple',
-        name:
-          type === 'pollo'
-            ? 'Ramen Pollo'
-            : type === 'cerdo'
-            ? 'Ramen Cerdo'
-            : 'Ramen Vegetariano',
-        ramenType: type,
-        price: prices.ramenPollo
-      });
-
-      updateSummary();
-    }
-
-    function addComboRB(){
-      const ramenType = document.getElementById('comboRB_ramen').value;
-      const bebida = document.getElementById('comboRB_bebida').value;
-
-      if(getRemainingStock(ramenType) <= 0){
-        alert('No queda stock para ese ramen');
-        return;
-      }
-
-      currentOrder.push({
-        type: 'comboRB',
-        name: `Ramen ${capitalize(ramenType)} + ${bebida}`,
-        ramenType,
-        bebida,
-        price: prices.comboRB
-      });
-
-      updateSummary();
-    }
-
-    function addComboRG(){
-      const ramenType = document.getElementById('comboRG_ramen').value;
-      const gyoza = document.getElementById('comboRG_gyoza').value;
-
-      if(getRemainingStock(ramenType) <= 0){
-        alert('No queda stock para ese ramen');
-        return;
-      }
-
-      currentOrder.push({
-        type: 'comboRG',
-        name: `Ramen ${capitalize(ramenType)} + Gyozas ${gyoza}`,
-        ramenType,
-        gyoza,
-        price: prices.comboRG
-      });
-
-      updateSummary();
-    }
-
-    function addComboFull(){
-      const ramenType = document.getElementById('comboFull_ramen').value;
-      const bebida = document.getElementById('comboFull_bebida').value;
-      const gyoza = document.getElementById('comboFull_gyoza').value;
-
-      if(getRemainingStock(ramenType) <= 0){
-        alert('No queda stock para ese ramen');
-        return;
-      }
-
-      currentOrder.push({
-        type: 'comboFull',
-        name: `Ramen ${capitalize(ramenType)} + ${bebida} + Gyozas ${gyoza}`,
-        ramenType,
-        bebida,
-        gyoza,
-        price: prices.comboFull
-      });
-
-      updateSummary();
-    }
-
-    function addExtra(nombre, precio){
-      currentOrder.push({
-        type: 'extra',
-        name: nombre,
-        price: precio
-      });
-
-      updateSummary();
-    }
-
-    function getReservedCount(type){
-      return currentOrder.filter(item => item.ramenType === type).length;
-    }
-
-    function getRemainingStock(type){
-      if(type === 'pollo') return stock.pollo - getReservedCount(type);
-      if(type === 'cerdo') return stock.cerdo - getReservedCount(type);
-      if(type === 'vegetariano') return stock.vegetariano - getReservedCount(type);
-      return 0;
-    }
-
-    function getSubtotal(){
-      return currentOrder.reduce((sum, item) => sum + item.price, 0);
-    }
-
-    function getDelivery(){
-      return parseInt(document.getElementById('clienteComuna').value || '0', 10);
-    }
-
-    function getDiscount(){
-      const promo = document.getElementById('promoDelivery').checked;
-      const subtotal = getSubtotal();
-      const delivery = getDelivery();
-      if(delivery === 0) return 0;
-      if(promo && subtotal >= 20000) return Math.round(delivery * 0.5);
-      return 0;
-    }
-
-    function getTotal(){
-      return getSubtotal() + getDelivery() - getDiscount();
-    }
-
-    function removeItem(index){
-      currentOrder.splice(index, 1);
-      updateSummary();
-    }
-
-    function limpiarPedido(){
-      currentOrder = [];
-      autoSaveDraft();
-      updateSummary();
-    }
-
-    function updateSummary(){
-      const lista = document.getElementById('pedidoLista');
-      lista.innerHTML = '';
-
-      if(currentUser){
-        document.getElementById('atendidoPorView').value = currentUser;
-      }
-
-      if(!currentOrder.length){
-        lista.innerHTML = '<li class="muted">Aún no hay productos agregados.</li>';
-      } else {
-        currentOrder.forEach((item, index) => {
-          const li = document.createElement('li');
-          li.innerHTML = `${item.name} — $${formatCLP(item.price)} 
-            <button class="btn btn-secondary" style="padding:4px 8px; margin-left:6px;" onclick="removeItem(${index})">Quitar</button>`;
-          lista.appendChild(li);
-        });
-      }
-
-      document.getElementById('subtotalTxt').textContent = '$' + formatCLP(getSubtotal());
-
-      const deliveryValue = getDelivery();
-      document.getElementById('deliveryTxt').textContent =
-        deliveryValue === 0 ? 'Retiro' : '$' + formatCLP(deliveryValue);
-
-      document.getElementById('descuentoTxt').textContent = '-$' + formatCLP(getDiscount());
-      document.getElementById('totalTxt').textContent = '$' + formatCLP(getTotal());
-
-      document.getElementById('stockPolloTxt').innerHTML = stockBadge(getRemainingStock('pollo'));
-      document.getElementById('stockCerdoTxt').innerHTML = stockBadge(getRemainingStock('cerdo'));
-      document.getElementById('stockVegetarianoTxt').innerHTML = stockBadge(getRemainingStock('vegetariano'));
-
-      autoSaveDraft();
-    }
-
-    function stockBadge(value){
-      if(value <= 0) return '<span class="badge out">Sin stock</span>';
-      if(value <= 3) return `<span class="badge warn">Quedan ${value}</span>`;
-      return `<span class="badge ok">Quedan ${value}</span>`;
-    }
-
-    function validateOrder(){
-      const nombre = document.getElementById('clienteNombre').value.trim();
-      const direccion = document.getElementById('clienteDireccion').value.trim();
-      if(!currentUser){
-        alert('Debes iniciar sesión');
-        return false;
-      }
-      if(!nombre){
-        alert('Ingresa el nombre del cliente');
-        return false;
-      }
-      if(!direccion){
-        alert('Ingresa la dirección');
-        return false;
-      }
-      if(!currentOrder.length){
-        alert('Agrega al menos un producto');
-        return false;
-      }
-      return true;
-    }
-
-    async function finalizarPedido(){
-      if (printingInProgress) {
-        alert("Espera, el ticket se está imprimiendo...");
-        return;
-      }
-
-      if(!validateOrder()) return;
-
-      const cliente = document.getElementById('clienteNombre').value.trim();
-      const direccion = document.getElementById('clienteDireccion').value.trim();
-      const comunaSelect = document.getElementById('clienteComuna');
-      const comuna = comunaSelect.options[comunaSelect.selectedIndex].text;
-      const atendidoPor = currentUser;
-      const medioPago = document.getElementById('medioPago').value;
-      const observaciones = document.getElementById('observaciones').value.trim();
-
-      const order = {
-        folio: nextFolio(),
-        fecha: new Date().toLocaleDateString('es-CL'),
-        hora: new Date().toLocaleTimeString('es-CL', { hour: '2-digit', minute: '2-digit' }),
-        cliente,
-        direccion,
-        comuna,
-        atendidoPor,
-        medioPago,
-        observaciones,
-        items: [...currentOrder],
-        subtotal: getSubtotal(),
-        delivery: getDelivery(),
-        descuento: getDiscount(),
-        total: getTotal()
-      };
-
-      descontarStock(order);
-      sales.push(order);
-      saveJSON(STORAGE_KEYS.sales, sales);
-      saveJSON(STORAGE_KEYS.stock, stock);
-      saveJSON(STORAGE_KEYS.lastOrder, order);
-      lastOrder = order;
-      fillSettings();
-
-      await generateAndPrintTickets(order);
-
-      currentOrder = [];
-      document.getElementById('clienteNombre').value = '';
-      document.getElementById('clienteDireccion').value = '';
-      document.getElementById('observaciones').value = '';
-      document.getElementById('promoDelivery').checked = false;
-      localStorage.removeItem(STORAGE_KEYS.draft);
-
-      updateSummary();
-      renderHistory();
-
-      alert(`Pedido ${order.folio} generado`);
-    }
-
-    function descontarStock(order){
-      order.items.forEach(item => {
-        if(item.ramenType === 'pollo') stock.pollo = Math.max(0, stock.pollo - 1);
-        if(item.ramenType === 'cerdo') stock.cerdo = Math.max(0, stock.cerdo - 1);
-        if(item.ramenType === 'vegetariano') stock.vegetariano = Math.max(0, stock.vegetariano - 1);
-      });
-    }
-
-    function nextFolio(){
-      const n = parseInt(localStorage.getItem(STORAGE_KEYS.folio) || '0', 10) + 1;
-      localStorage.setItem(STORAGE_KEYS.folio, String(n));
-      return String(n).padStart(5, '0');
-    }
-
-    function formatCLP(value){
-      return Number(value || 0).toLocaleString('es-CL');
-    }
-
-    function capitalize(text){
-      return text.charAt(0).toUpperCase() + text.slice(1);
-    }
-
-    async function loadLogoDataUrl(){
-      try{
-        const res = await fetch('logo.png');
-        const blob = await res.blob();
-        return await blobToDataURL(blob);
-      } catch {
-        return null;
-      }
-    }
-
-    function blobToDataURL(blob){
-      return new Promise((resolve, reject) => {
-        const reader = new FileReader();
-        reader.onloadend = () => resolve(reader.result);
-        reader.onerror = reject;
-        reader.readAsDataURL(blob);
-      });
-    }
-
-    async function generateAndPrintTickets(order){
-      printingInProgress = true;
-
-      try {
-        const logoDataUrl = await loadLogoDataUrl();
-
-        const clienteBlob = await generateTicketPdf(order, 'CLIENTE', logoDataUrl);
-        const internoBlob = await generateTicketPdf(order, 'RESPALDO INTERNO', logoDataUrl);
-
-        openBlobForPrint(clienteBlob);
-
-        setTimeout(() => {
-          openBlobForPrint(internoBlob);
-        }, 1200);
-
-      } catch (error) {
-        console.error("Error impresión:", error);
-      }
-
-      setTimeout(() => {
-        printingInProgress = false;
-      }, 4000);
-    }
-
-    async function generateTicketPdf(order, copyLabel, logoDataUrl){
-      const { jsPDF } = window.jspdf;
-
-      const doc = new jsPDF({
-        orientation: 'portrait',
-        unit: 'mm',
-        format: [58, 220]
-      });
-
-      let y = 5;
-
-      if (logoDataUrl) {
-        try {
-          doc.addImage(logoDataUrl, 'PNG', 9, y, 40, 18);
-          y += 20;
-        } catch {}
-      }
-
-      doc.setFontSize(11);
-      doc.setFont(undefined, 'bold');
-      doc.text('RAMEN & FUEGO', 29, y, { align: 'center' });
-      y += 5;
-
-      doc.setFontSize(9);
-      doc.text(copyLabel, 29, y, { align: 'center' });
-      y += 4;
-
-      doc.line(2, y, 56, y);
-      y += 4;
-
-      doc.setFont(undefined, 'normal');
-      doc.setFontSize(8.5);
-
-      const info = [
-        `Folio: ${order.folio}`,
-        `${order.fecha} ${order.hora}`,
-        `Cliente: ${order.cliente}`,
-        `Dir: ${order.direccion}`,
-        `Comuna: ${order.comuna}`,
-        `Atiende: ${order.atendidoPor}`,
-        `Pago: ${order.medioPago}`
-      ];
-
-      if (order.observaciones) {
-        info.push(`Obs: ${order.observaciones}`);
-      }
-
-      info.forEach(line => {
-        const lines = doc.splitTextToSize(line, 54);
-        doc.text(lines, 2, y);
-        y += lines.length * 3.8;
-      });
-
-      y += 2;
-      doc.line(2, y, 56, y);
-      y += 4;
-
-      doc.setFont(undefined, 'bold');
-      doc.text('DETALLE', 2, y);
-      y += 4;
-
-      doc.setFont(undefined, 'normal');
-
-      order.items.forEach(item => {
-        const lines = doc.splitTextToSize(item.name, 38);
-        doc.text(lines, 2, y);
-        doc.text(`$${formatCLP(item.price)}`, 56, y, { align: 'right' });
-
-        y += lines.length * 3.8;
-        y += 1;
-      });
-
-      y += 1;
-      doc.line(2, y, 56, y);
-      y += 4;
-
-      doc.text('Subtotal', 2, y);
-      doc.text(`$${formatCLP(order.subtotal)}`, 56, y, { align: 'right' });
-      y += 4.5;
-
-      doc.text(order.delivery === 0 ? 'Retiro' : 'Delivery', 2, y);
-      doc.text(order.delivery === 0 ? '$0' : `$${formatCLP(order.delivery)}`, 56, y, { align: 'right' });
-      y += 4.5;
-
-      doc.text('Desc.', 2, y);
-      doc.text(`-$${formatCLP(order.descuento)}`, 56, y, { align: 'right' });
-      y += 5.5;
-
-      doc.setFont(undefined, 'bold');
-      doc.setFontSize(10.5);
-
-      doc.text('TOTAL', 2, y);
-      doc.text(`$${formatCLP(order.total)}`, 56, y, { align: 'right' });
-      y += 6;
-
-      doc.line(2, y, 56, y);
-      y += 6;
-
-      doc.setFontSize(9);
-      doc.setFont(undefined, 'bold');
-      doc.text('Gracias por tu compra', 29, y, { align: 'center' });
-
-      return doc.output('blob');
-    }
-
-    function estimateInternalCost(order){
-      let cost = 0;
-
-      order.items.forEach(item => {
-        if(item.type === 'simple'){
-          if(item.ramenType === 'pollo') cost += 2500;
-          else if(item.ramenType === 'cerdo') cost += 2600;
-          else if(item.ramenType === 'vegetariano') cost += 2200;
-        } else if(item.type === 'comboRB'){
-          if(item.ramenType === 'pollo') cost += 3000;
-          else if(item.ramenType === 'cerdo') cost += 3100;
-          else if(item.ramenType === 'vegetariano') cost += 2700;
-        } else if(item.type === 'comboRG'){
-          if(item.ramenType === 'pollo') cost += 3800;
-          else if(item.ramenType === 'cerdo') cost += 3900;
-          else if(item.ramenType === 'vegetariano') cost += 3500;
-        } else if(item.type === 'comboFull'){
-          if(item.ramenType === 'pollo') cost += 4300;
-          else if(item.ramenType === 'cerdo') cost += 4400;
-          else if(item.ramenType === 'vegetariano') cost += 4000;
-        } else if(item.type === 'extra'){
-          if(item.name === 'Huevo extra') cost += 300;
-          if(item.name === 'Picante especial') cost += 100;
-          if(item.name === 'Extra carne') cost += 600;
-        }
-      });
-
-      return cost;
-    }
-
-    function openBlobForPrint(blob){
-      const url = URL.createObjectURL(blob);
-      const win = window.open(url, '_blank');
-      if(!win){
-        alert('El navegador bloqueó la impresión. Permite ventanas emergentes.');
-        return;
-      }
-      win.onload = () => setTimeout(() => win.print(), 500);
-    }
-
-    async function reimprimirUltimoTicket(){
-      if(!lastOrder){
-        alert('No hay último ticket para reimprimir.');
-        return;
-      }
-      if(printingInProgress){
-        alert('Espera, hay una impresión en curso.');
-        return;
-      }
-      await generateAndPrintTickets(lastOrder);
-    }
-
-    async function reimprimirDesdeHistorial(index){
-      if(printingInProgress){
-        alert('Espera, hay una impresión en curso.');
-        return;
-      }
-      const sale = sales[index];
-      if(!sale){
-        alert('No se encontró el ticket.');
-        return;
-      }
-      lastOrder = sale;
-      saveJSON(STORAGE_KEYS.lastOrder, sale);
-      await generateAndPrintTickets(sale);
-    }
-
-    function renderHistory(){
-      const cont = document.getElementById('historialContenido');
-      if(!sales.length){
-        cont.innerHTML = '<p class="muted">Aún no hay ventas registradas.</p>';
-        return;
-      }
-
-      let html = `
-        <table>
-          <thead>
-            <tr>
-              <th>Folio</th>
-              <th>Fecha</th>
-              <th>Cliente</th>
-              <th>Atendido por</th>
-              <th>Total</th>
-              <th>Acción</th>
-            </tr>
-          </thead>
-          <tbody>
-      `;
-
-      const reversed = [...sales].reverse();
-      reversed.forEach((sale, reversedIndex) => {
-        const realIndex = sales.length - 1 - reversedIndex;
-        html += `
-          <tr>
-            <td>${sale.folio}</td>
-            <td>${sale.fecha} ${sale.hora}</td>
-            <td>${sale.cliente}</td>
-            <td>${sale.atendidoPor}</td>
-            <td>$${formatCLP(sale.total)}</td>
-            <td>
-              <button class="btn btn-secondary" onclick="reimprimirDesdeHistorial(${realIndex})">
-                Reimprimir
-              </button>
-            </td>
-          </tr>
-        `;
-      });
-
-      html += '</tbody></table>';
-      cont.innerHTML = html;
-    }
-
-    function mostrarResumenCierre(){
-      const cont = document.getElementById('resumenCierre');
-
-      if(!sales.length){
-        cont.innerHTML = '<p class="muted">No hay ventas registradas.</p>';
-        return;
-      }
-
-      const totalVentas = sales.reduce((a,b)=>a+b.total,0);
-      const totalDelivery = sales.reduce((a,b)=>a+b.delivery,0);
-      const totalDescuentos = sales.reduce((a,b)=>a+b.descuento,0);
-      const costoEstimado = sales.reduce((sum, sale) => sum + estimateInternalCost(sale), 0);
-      const margen = totalVentas - costoEstimado;
-
-      cont.innerHTML = `
-        <div class="card soft">
-          <div class="line"><span>Pedidos</span><strong>${sales.length}</strong></div>
-          <div class="line"><span>Ventas totales</span><strong>$${formatCLP(totalVentas)}</strong></div>
-          <div class="line"><span>Delivery bruto</span><strong>$${formatCLP(totalDelivery)}</strong></div>
-          <div class="line"><span>Descuentos delivery</span><strong>-$${formatCLP(totalDescuentos)}</strong></div>
-          <div class="line"><span>Costo estimado</span><strong>$${formatCLP(costoEstimado)}</strong></div>
-          <div class="line total"><span>Margen estimado</span><span>$${formatCLP(margen)}</span></div>
-        </div>
-      `;
-    }
-
-    function renderUltimosCierres(){
-      const closures = loadJSON(STORAGE_KEYS.closures, []);
-      const cont = document.getElementById('resumenCierre');
-
-      if(!closures.length){
-        cont.innerHTML = '<p class="muted">No hay cierres automáticos guardados aún.</p>';
-        return;
-      }
-
-      const ultimo = closures[closures.length - 1];
-
-      cont.innerHTML = `
-        <div class="card soft">
-          <div class="line"><span>Fecha cierre</span><strong>${ultimo.fechaISO}</strong></div>
-          <div class="line"><span>Pedidos</span><strong>${ultimo.pedidos}</strong></div>
-          <div class="line"><span>Ventas totales</span><strong>$${formatCLP(ultimo.totalVentas)}</strong></div>
-          <div class="line"><span>Delivery bruto</span><strong>$${formatCLP(ultimo.totalDelivery)}</strong></div>
-          <div class="line"><span>Descuentos delivery</span><strong>-$${formatCLP(ultimo.totalDescuentos)}</strong></div>
-          <div class="line"><span>Costo estimado</span><strong>$${formatCLP(ultimo.costoEstimado)}</strong></div>
-          <div class="line total"><span>Margen estimado</span><span>$${formatCLP(ultimo.margen)}</span></div>
-        </div>
-      `;
-    }
-
-    function exportExcel(){
-      if(!sales.length){
-        alert('No hay ventas para exportar');
-        return;
-      }
-
-      const rows = sales.map(sale => ({
-        Folio: sale.folio,
-        Fecha: sale.fecha,
-        Hora: sale.hora,
-        'Atendido por': sale.atendidoPor,
-        Cliente: sale.cliente,
-        Dirección: sale.direccion,
-        Comuna: sale.comuna,
-        'Medio de pago': sale.medioPago,
-        Detalle: sale.items.map(i => i.name).join(' | '),
-        Subtotal: sale.subtotal,
-        Delivery: sale.delivery,
-        'Descuento Delivery': sale.descuento,
-        Total: sale.total,
-        'Costo Estimado': estimateInternalCost(sale),
-        'Margen Estimado': sale.total - estimateInternalCost(sale),
-        Observaciones: sale.observaciones || ''
-      }));
-
-      const ws = XLSX.utils.json_to_sheet(rows);
-      const wb = XLSX.utils.book_new();
-      XLSX.utils.book_append_sheet(wb, ws, 'Ventas');
-      XLSX.writeFile(wb, `Cierre_Ramen_y_Fuego_${new Date().toISOString().slice(0,10)}.xlsx`);
-    }
+    function init(){revisarCambioDeDia();fillSettings();updatePriceViews();loadDraft();updateSummary();renderHistory();localStorage.removeItem(STORAGE_KEYS.sessionUser);restoreSession();}
+    function restoreSession(){if(currentUser){loginOverlay.classList.add('hidden');usuarioActivoHeader.textContent=currentUser;atendidoPorView.value=currentUser}else{loginOverlay.classList.remove('hidden');usuarioActivoHeader.textContent='—';atendidoPorView.value=''}}
+    function login(){const user=loginUsuario.value,pass=loginPassword.value,error=loginError;if(!user||!pass){error.textContent='Ingresa usuario y password.';return}if(USERS[user]!==pass){error.textContent='Credenciales incorrectas.';return}currentUser=user;usuarioActivoHeader.textContent=currentUser;atendidoPorView.value=currentUser;loginOverlay.classList.add('hidden');loginPassword.value='';error.textContent='';autoSaveDraft();}
+    function cerrarSesion(){generarCierreAutomaticoDelDia();currentUser="";localStorage.removeItem(STORAGE_KEYS.sessionUser);usuarioActivoHeader.textContent='—';atendidoPorView.value='';loginUsuario.value='';loginPassword.value='';loginOverlay.classList.remove('hidden');}
+    function loadJSON(key,fallback){try{const raw=localStorage.getItem(key);return raw?JSON.parse(raw):fallback}catch{return fallback}}
+    function saveJSON(key,value){localStorage.setItem(key,JSON.stringify(value))}
+    function hoyISO(){return new Date().toISOString().slice(0,10)}
+    function fechaCLAISO(fechaCL){if(!fechaCL)return'';const sep=fechaCL.includes('/')?'/':'-';const parts=fechaCL.split(sep);if(parts.length!==3)return'';const[dd,mm,yyyy]=parts;return `${yyyy}-${mm.padStart(2,'0')}-${dd.padStart(2,'0')}`}
+    function generarCierreAutomaticoDelDia(fechaObjetivo=null){const closures=loadJSON(STORAGE_KEYS.closures,[]),fechaISO=fechaObjetivo||hoyISO();if(closures.some(c=>c.fechaISO===fechaISO))return;const ventasDelDia=sales.filter(s=>fechaCLAISO(s.fecha)===fechaISO);if(!ventasDelDia.length)return;const totalVentas=ventasDelDia.reduce((a,b)=>a+b.total,0),totalDelivery=ventasDelDia.reduce((a,b)=>a+b.delivery,0),totalDescuentos=ventasDelDia.reduce((a,b)=>a+b.descuento,0),costoEstimado=ventasDelDia.reduce((sum,sale)=>sum+estimateInternalCost(sale),0),margen=totalVentas-costoEstimado;closures.push({fechaISO,pedidos:ventasDelDia.length,totalVentas,totalDelivery,totalDescuentos,costoEstimado,margen,creadoEn:new Date().toISOString()});saveJSON(STORAGE_KEYS.closures,closures);}
+    function revisarCambioDeDia(){const lastAccess=localStorage.getItem(STORAGE_KEYS.lastAccessDate),hoy=hoyISO();if(!lastAccess){localStorage.setItem(STORAGE_KEYS.lastAccessDate,hoy);return}if(lastAccess!==hoy){generarCierreAutomaticoDelDia(lastAccess);localStorage.setItem(STORAGE_KEYS.lastAccessDate,hoy)}}
+    function autoSaveDraft(){const draft={cliente:clienteNombre.value,direccion:clienteDireccion.value,comuna:clienteComuna.value,medioPago:medioPago.value,observaciones:observaciones.value,promoDelivery:promoDelivery.checked,items:currentOrder};saveJSON(STORAGE_KEYS.draft,draft)}
+    function loadDraft(){const draft=loadJSON(STORAGE_KEYS.draft,null);if(!draft)return;clienteNombre.value=draft.cliente||'';clienteDireccion.value=draft.direccion||'';clienteComuna.value=draft.comuna||'0';medioPago.value=draft.medioPago||'Transferencia';observaciones.value=draft.observaciones||'';promoDelivery.checked=!!draft.promoDelivery;currentOrder=draft.items||[]}
+    function showSection(id,btn){document.querySelectorAll('.section').forEach(sec=>sec.classList.remove('active'));document.getElementById(id).classList.add('active');document.querySelectorAll('.tabs button').forEach(b=>b.classList.remove('active'));btn.classList.add('active');if(id==='historial')renderHistory();}
+    function fillSettings(){stockPollo.value=stock.pollo;stockCerdo.value=stock.cerdo;stockVegetariano.value=stock.vegetariano;precioPollo.value=prices.ramenPollo;precioCerdo.value=prices.ramenCerdo;precioComboRB.value=prices.comboRB;precioComboRG.value=prices.comboRG;precioComboFull.value=prices.comboFull;precioWokPollo.value=prices.wokPollo;precioWokCerdo.value=prices.wokCerdo;precioWokMixto.value=prices.wokMixto;precioWokVegetariano.value=prices.wokVegetariano;precioWokComboPollo.value=prices.wokComboPollo;precioWokComboCerdo.value=prices.wokComboCerdo;precioWokComboMixto.value=prices.wokComboMixto;precioWokComboVegetariano.value=prices.wokComboVegetariano;precioWokBebidaExtra.value=prices.wokBebidaExtra;}
+    function updatePriceViews(){pricePolloView.textContent=formatCLP(prices.ramenPollo);priceCerdoView.textContent=formatCLP(prices.ramenCerdo);priceVegetarianoView.textContent=formatCLP(prices.ramenPollo);priceComboRBView.textContent=formatCLP(prices.comboRB);priceComboRGView.textContent=formatCLP(prices.comboRG);priceComboFullView.textContent=formatCLP(prices.comboFull);priceWokPolloView.textContent=formatCLP(prices.wokPollo);priceWokCerdoView.textContent=formatCLP(prices.wokCerdo);priceWokMixtoView.textContent=formatCLP(prices.wokMixto);priceWokVegetarianoView.textContent=formatCLP(prices.wokVegetariano);priceWokComboPolloView.textContent=formatCLP(prices.wokComboPollo);priceWokComboCerdoView.textContent=formatCLP(prices.wokComboCerdo);priceWokComboMixtoView.textContent=formatCLP(prices.wokComboMixto);priceWokComboVegetarianoView.textContent=formatCLP(prices.wokComboVegetariano);}
+    function saveStock(){stock.pollo=Math.max(0,parseInt(stockPollo.value||'0',10));stock.cerdo=Math.max(0,parseInt(stockCerdo.value||'0',10));stock.vegetariano=Math.max(0,parseInt(stockVegetariano.value||'0',10));saveJSON(STORAGE_KEYS.stock,stock);fillSettings();updateSummary();alert('Stock guardado')}
+    function resetStock(){stock={pollo:15,cerdo:15,vegetariano:5};saveJSON(STORAGE_KEYS.stock,stock);fillSettings();updateSummary();alert('Stock restablecido')}
+    function savePrices(){prices.ramenPollo=Math.max(0,parseInt(precioPollo.value||'0',10));prices.ramenCerdo=Math.max(0,parseInt(precioCerdo.value||'0',10));prices.comboRB=Math.max(0,parseInt(precioComboRB.value||'0',10));prices.comboRG=Math.max(0,parseInt(precioComboRG.value||'0',10));prices.comboFull=Math.max(0,parseInt(precioComboFull.value||'0',10));prices.wokPollo=Math.max(0,parseInt(precioWokPollo.value||'0',10));prices.wokCerdo=Math.max(0,parseInt(precioWokCerdo.value||'0',10));prices.wokMixto=Math.max(0,parseInt(precioWokMixto.value||'0',10));prices.wokVegetariano=Math.max(0,parseInt(precioWokVegetariano.value||'0',10));prices.wokComboPollo=Math.max(0,parseInt(precioWokComboPollo.value||'0',10));prices.wokComboCerdo=Math.max(0,parseInt(precioWokComboCerdo.value||'0',10));prices.wokComboMixto=Math.max(0,parseInt(precioWokComboMixto.value||'0',10));prices.wokComboVegetariano=Math.max(0,parseInt(precioWokComboVegetariano.value||'0',10));prices.wokBebidaExtra=Math.max(0,parseInt(precioWokBebidaExtra.value||'0',10));saveJSON(STORAGE_KEYS.prices,prices);updatePriceViews();updateSummary();alert('Precios guardados')}
+    function addSimpleRamen(type){if(type==='pollo'&&getRemainingStock('pollo')<=0){alert('No queda stock de ramen pollo');return}if(type==='cerdo'&&getRemainingStock('cerdo')<=0){alert('No queda stock de ramen cerdo');return}if(type==='vegetariano'&&getRemainingStock('vegetariano')<=0){alert('No queda stock de ramen vegetariano');return}currentOrder.push({type:'simple',name:type==='pollo'?'Ramen Pollo':type==='cerdo'?'Ramen Cerdo':'Ramen Vegetariano',ramenType:type,price:prices.ramenPollo});updateSummary();}
+    function addComboRB(){const ramenType=comboRB_ramen.value,bebida=comboRB_bebida.value;if(getRemainingStock(ramenType)<=0){alert('No queda stock para ese ramen');return}currentOrder.push({type:'comboRB',name:`Ramen ${capitalize(ramenType)} + ${bebida}`,ramenType,bebida,price:prices.comboRB});updateSummary();}
+    function addComboRG(){const ramenType=comboRG_ramen.value,gyoza=comboRG_gyoza.value;if(getRemainingStock(ramenType)<=0){alert('No queda stock para ese ramen');return}currentOrder.push({type:'comboRG',name:`Ramen ${capitalize(ramenType)} + Gyozas ${gyoza}`,ramenType,gyoza,price:prices.comboRG});updateSummary();}
+    function addComboFull(){const ramenType=comboFull_ramen.value,bebida=comboFull_bebida.value,gyoza=comboFull_gyoza.value;if(getRemainingStock(ramenType)<=0){alert('No queda stock para ese ramen');return}currentOrder.push({type:'comboFull',name:`Ramen ${capitalize(ramenType)} + ${bebida} + Gyozas ${gyoza}`,ramenType,bebida,gyoza,price:prices.comboFull});updateSummary();}
+    function addWok(type){const map={pollo:['Fideos al Wok Pollo',prices.wokPollo],cerdo:['Fideos al Wok Cerdo',prices.wokCerdo],mixto:['Fideos al Wok Mixto',prices.wokMixto],vegetariano:['Fideos al Wok Vegetariano',prices.wokVegetariano]};currentOrder.push({type:'wok',name:map[type][0],wokType:type,price:map[type][1]});updateSummary();}
+    function addWokCombo(type){const ids={pollo:'wokComboPolloBebida',cerdo:'wokComboCerdoBebida',mixto:'wokComboMixtoBebida',vegetariano:'wokComboVegetarianoBebida'},map={pollo:['Fideos Pollo + Gyozas',prices.wokComboPollo],cerdo:['Fideos Cerdo + Gyozas',prices.wokComboCerdo],mixto:['Fideos Mixto + Gyozas',prices.wokComboMixto],vegetariano:['Fideos Vegetariano + Gyozas',prices.wokComboVegetariano]};let name=map[type][0],price=map[type][1];const chk=document.getElementById(ids[type]);if(chk&&chk.checked){name+=' + Bebida';price+=prices.wokBebidaExtra;chk.checked=false}currentOrder.push({type:'wokCombo',name,wokType:type,price});updateSummary();}
+    function addExtra(nombre,precio){currentOrder.push({type:'extra',name:nombre,price:precio});updateSummary();}
+    function getReservedCount(type){return currentOrder.filter(item=>item.ramenType===type).length}
+    function getRemainingStock(type){if(type==='pollo')return stock.pollo-getReservedCount(type);if(type==='cerdo')return stock.cerdo-getReservedCount(type);if(type==='vegetariano')return stock.vegetariano-getReservedCount(type);return 0}
+    function getSubtotal(){return currentOrder.reduce((sum,item)=>sum+item.price,0)}
+    function getDelivery(){return parseInt(clienteComuna.value||'0',10)}
+    function getDiscount(){const promo=promoDelivery.checked,subtotal=getSubtotal(),delivery=getDelivery();if(delivery===0)return 0;if(promo&&subtotal>=20000)return Math.round(delivery*.5);return 0}
+    function getTotal(){return getSubtotal()+getDelivery()-getDiscount()}
+    function removeItem(index){currentOrder.splice(index,1);updateSummary()}
+    function limpiarPedido(){currentOrder=[];autoSaveDraft();updateSummary()}
+    function updateSummary(){pedidoLista.innerHTML='';if(currentUser)atendidoPorView.value=currentUser;if(!currentOrder.length){pedidoLista.innerHTML='<li class="muted">Aún no hay productos agregados.</li>'}else{currentOrder.forEach((item,index)=>{const li=document.createElement('li');li.innerHTML=`${item.name} — $${formatCLP(item.price)} <button class="btn btn-secondary" style="padding:4px 8px; margin-left:6px;" onclick="removeItem(${index})">Quitar</button>`;pedidoLista.appendChild(li);})}subtotalTxt.textContent='$'+formatCLP(getSubtotal());const deliveryValue=getDelivery();deliveryTxt.textContent=deliveryValue===0?'Retiro':'$'+formatCLP(deliveryValue);descuentoTxt.textContent='-$'+formatCLP(getDiscount());totalTxt.textContent='$'+formatCLP(getTotal());stockPolloTxt.innerHTML=stockBadge(getRemainingStock('pollo'));stockCerdoTxt.innerHTML=stockBadge(getRemainingStock('cerdo'));stockVegetarianoTxt.innerHTML=stockBadge(getRemainingStock('vegetariano'));autoSaveDraft();}
+    function stockBadge(value){if(value<=0)return'<span class="badge out">Sin stock</span>';if(value<=3)return`<span class="badge warn">Quedan ${value}</span>`;return`<span class="badge ok">Quedan ${value}</span>`}
+    function validateOrder(){const nombre=clienteNombre.value.trim(),direccion=clienteDireccion.value.trim();if(!currentUser){alert('Debes iniciar sesión');return false}if(!nombre){alert('Ingresa el nombre del cliente');return false}if(!direccion){alert('Ingresa la dirección');return false}if(!currentOrder.length){alert('Agrega al menos un producto');return false}return true}
+    async function finalizarPedido(){if(printingInProgress){alert('Espera, el ticket se está imprimiendo...');return}if(!validateOrder())return;const comuna=clienteComuna.options[clienteComuna.selectedIndex].text,order={folio:nextFolio(),fecha:new Date().toLocaleDateString('es-CL'),hora:new Date().toLocaleTimeString('es-CL',{hour:'2-digit',minute:'2-digit'}),cliente:clienteNombre.value.trim(),direccion:clienteDireccion.value.trim(),comuna,atendidoPor:currentUser,medioPago:medioPago.value,observaciones:observaciones.value.trim(),items:[...currentOrder],subtotal:getSubtotal(),delivery:getDelivery(),descuento:getDiscount(),total:getTotal()};descontarStock(order);sales.push(order);saveJSON(STORAGE_KEYS.sales,sales);saveJSON(STORAGE_KEYS.stock,stock);saveJSON(STORAGE_KEYS.lastOrder,order);lastOrder=order;fillSettings();await generateAndPrintTickets(order);currentOrder=[];clienteNombre.value='';clienteDireccion.value='';observaciones.value='';promoDelivery.checked=false;localStorage.removeItem(STORAGE_KEYS.draft);updateSummary();renderHistory();alert(`Pedido ${order.folio} generado`);}
+    function descontarStock(order){order.items.forEach(item=>{if(item.ramenType==='pollo')stock.pollo=Math.max(0,stock.pollo-1);if(item.ramenType==='cerdo')stock.cerdo=Math.max(0,stock.cerdo-1);if(item.ramenType==='vegetariano')stock.vegetariano=Math.max(0,stock.vegetariano-1);});}
+    function nextFolio(){const n=parseInt(localStorage.getItem(STORAGE_KEYS.folio)||'0',10)+1;localStorage.setItem(STORAGE_KEYS.folio,String(n));return String(n).padStart(5,'0')}
+    function formatCLP(value){return Number(value||0).toLocaleString('es-CL')}
+    function capitalize(text){return text.charAt(0).toUpperCase()+text.slice(1)}
+    async function loadLogoDataUrl(){try{const res=await fetch('logo.png'),blob=await res.blob();return await blobToDataURL(blob)}catch{return null}}
+    function blobToDataURL(blob){return new Promise((resolve,reject)=>{const reader=new FileReader();reader.onloadend=()=>resolve(reader.result);reader.onerror=reject;reader.readAsDataURL(blob);})}
+    async function generateAndPrintTickets(order){printingInProgress=true;try{const logoDataUrl=await loadLogoDataUrl(),clienteBlob=await generateTicketPdf(order,'CLIENTE',logoDataUrl),internoBlob=await generateTicketPdf(order,'RESPALDO INTERNO',logoDataUrl);openBlobForPrint(clienteBlob);setTimeout(()=>openBlobForPrint(internoBlob),1200)}catch(error){console.error('Error impresión:',error)}setTimeout(()=>{printingInProgress=false},4000)}
+    async function generateTicketPdf(order,copyLabel,logoDataUrl){const{jsPDF}=window.jspdf;const doc=new jsPDF({orientation:'portrait',unit:'mm',format:[58,220]});let y=5;if(logoDataUrl){try{doc.addImage(logoDataUrl,'PNG',9,y,40,18);y+=20}catch{}}doc.setFontSize(11);doc.setFont(undefined,'bold');doc.text('RAMEN & FUEGO',29,y,{align:'center'});y+=5;doc.setFontSize(9);doc.text(copyLabel,29,y,{align:'center'});y+=4;doc.line(2,y,56,y);y+=4;doc.setFont(undefined,'normal');doc.setFontSize(8.5);const info=[`Folio: ${order.folio}`,`${order.fecha} ${order.hora}`,`Cliente: ${order.cliente}`,`Dir: ${order.direccion}`,`Comuna: ${order.comuna}`,`Atiende: ${order.atendidoPor}`,`Pago: ${order.medioPago}`];if(order.observaciones)info.push(`Obs: ${order.observaciones}`);info.forEach(line=>{const lines=doc.splitTextToSize(line,54);doc.text(lines,2,y);y+=lines.length*3.8});y+=2;doc.line(2,y,56,y);y+=4;doc.setFont(undefined,'bold');doc.text('DETALLE',2,y);y+=4;doc.setFont(undefined,'normal');order.items.forEach(item=>{const lines=doc.splitTextToSize(item.name,38);doc.text(lines,2,y);doc.text(`$${formatCLP(item.price)}`,56,y,{align:'right'});y+=lines.length*3.8;y+=1});y+=1;doc.line(2,y,56,y);y+=4;doc.text('Subtotal',2,y);doc.text(`$${formatCLP(order.subtotal)}`,56,y,{align:'right'});y+=4.5;doc.text(order.delivery===0?'Retiro':'Delivery',2,y);doc.text(order.delivery===0?'$0':`$${formatCLP(order.delivery)}`,56,y,{align:'right'});y+=4.5;doc.text('Desc.',2,y);doc.text(`-$${formatCLP(order.descuento)}`,56,y,{align:'right'});y+=5.5;doc.setFont(undefined,'bold');doc.setFontSize(10.5);doc.text('TOTAL',2,y);doc.text(`$${formatCLP(order.total)}`,56,y,{align:'right'});y+=6;doc.line(2,y,56,y);y+=6;doc.setFontSize(9);doc.setFont(undefined,'bold');doc.text('Gracias por tu compra',29,y,{align:'center'});return doc.output('blob');}
+    function estimateInternalCost(order){let cost=0;order.items.forEach(item=>{if(item.type==='simple'){if(item.ramenType==='pollo')cost+=2500;else if(item.ramenType==='cerdo')cost+=2600;else if(item.ramenType==='vegetariano')cost+=2200}else if(item.type==='comboRB'){if(item.ramenType==='pollo')cost+=3000;else if(item.ramenType==='cerdo')cost+=3100;else if(item.ramenType==='vegetariano')cost+=2700}else if(item.type==='comboRG'){if(item.ramenType==='pollo')cost+=3800;else if(item.ramenType==='cerdo')cost+=3900;else if(item.ramenType==='vegetariano')cost+=3500}else if(item.type==='comboFull'){if(item.ramenType==='pollo')cost+=4300;else if(item.ramenType==='cerdo')cost+=4400;else if(item.ramenType==='vegetariano')cost+=4000}else if(item.type==='extra'){if(item.name==='Huevo extra')cost+=300;if(item.name==='Picante especial')cost+=100;if(item.name==='Extra carne')cost+=600}else if(item.type==='wok'){if(item.wokType==='pollo')cost+=3500;else if(item.wokType==='cerdo')cost+=3900;else if(item.wokType==='mixto')cost+=4600;else if(item.wokType==='vegetariano')cost+=3000}else if(item.type==='wokCombo'){if(item.wokType==='pollo')cost+=4700;else if(item.wokType==='cerdo')cost+=5100;else if(item.wokType==='mixto')cost+=5800;else if(item.wokType==='vegetariano')cost+=4200;if(item.name.includes('Bebida'))cost+=600}});return cost}
+    function openBlobForPrint(blob){const url=URL.createObjectURL(blob),win=window.open(url,'_blank');if(!win){alert('El navegador bloqueó la impresión. Permite ventanas emergentes.');return}win.onload=()=>setTimeout(()=>win.print(),500)}
+    async function reimprimirUltimoTicket(){if(!lastOrder){alert('No hay último ticket para reimprimir.');return}if(printingInProgress){alert('Espera, hay una impresión en curso.');return}await generateAndPrintTickets(lastOrder)}
+    async function reimprimirDesdeHistorial(index){if(printingInProgress){alert('Espera, hay una impresión en curso.');return}const sale=sales[index];if(!sale){alert('No se encontró el ticket.');return}lastOrder=sale;saveJSON(STORAGE_KEYS.lastOrder,sale);await generateAndPrintTickets(sale)}
+    function renderHistory(){const cont=historialContenido;if(!sales.length){cont.innerHTML='<p class="muted">Aún no hay ventas registradas.</p>';return}let html=`<table><thead><tr><th>Folio</th><th>Fecha</th><th>Cliente</th><th>Atendido por</th><th>Total</th><th>Acción</th></tr></thead><tbody>`;[...sales].reverse().forEach((sale,reversedIndex)=>{const realIndex=sales.length-1-reversedIndex;html+=`<tr><td>${sale.folio}</td><td>${sale.fecha} ${sale.hora}</td><td>${sale.cliente}</td><td>${sale.atendidoPor}</td><td>$${formatCLP(sale.total)}</td><td><button class="btn btn-secondary" onclick="reimprimirDesdeHistorial(${realIndex})">Reimprimir</button></td></tr>`});html+='</tbody></table>';cont.innerHTML=html}
+    function mostrarResumenCierre(){const cont=resumenCierre;if(!sales.length){cont.innerHTML='<p class="muted">No hay ventas registradas.</p>';return}const totalVentas=sales.reduce((a,b)=>a+b.total,0),totalDelivery=sales.reduce((a,b)=>a+b.delivery,0),totalDescuentos=sales.reduce((a,b)=>a+b.descuento,0),costoEstimado=sales.reduce((sum,sale)=>sum+estimateInternalCost(sale),0),margen=totalVentas-costoEstimado;cont.innerHTML=`<div class="card soft"><div class="line"><span>Pedidos</span><strong>${sales.length}</strong></div><div class="line"><span>Ventas totales</span><strong>$${formatCLP(totalVentas)}</strong></div><div class="line"><span>Delivery bruto</span><strong>$${formatCLP(totalDelivery)}</strong></div><div class="line"><span>Descuentos delivery</span><strong>-$${formatCLP(totalDescuentos)}</strong></div><div class="line"><span>Costo estimado</span><strong>$${formatCLP(costoEstimado)}</strong></div><div class="line total"><span>Margen estimado</span><span>$${formatCLP(margen)}</span></div></div>`}
+    function renderUltimosCierres(){const closures=loadJSON(STORAGE_KEYS.closures,[]),cont=resumenCierre;if(!closures.length){cont.innerHTML='<p class="muted">No hay cierres automáticos guardados aún.</p>';return}const ultimo=closures[closures.length-1];cont.innerHTML=`<div class="card soft"><div class="line"><span>Fecha cierre</span><strong>${ultimo.fechaISO}</strong></div><div class="line"><span>Pedidos</span><strong>${ultimo.pedidos}</strong></div><div class="line"><span>Ventas totales</span><strong>$${formatCLP(ultimo.totalVentas)}</strong></div><div class="line"><span>Delivery bruto</span><strong>$${formatCLP(ultimo.totalDelivery)}</strong></div><div class="line"><span>Descuentos delivery</span><strong>-$${formatCLP(ultimo.totalDescuentos)}</strong></div><div class="line"><span>Costo estimado</span><strong>$${formatCLP(ultimo.costoEstimado)}</strong></div><div class="line total"><span>Margen estimado</span><span>$${formatCLP(ultimo.margen)}</span></div></div>`}
+    function exportExcel(){if(!sales.length){alert('No hay ventas para exportar');return}const rows=sales.map(sale=>({Folio:sale.folio,Fecha:sale.fecha,Hora:sale.hora,'Atendido por':sale.atendidoPor,Cliente:sale.cliente,Dirección:sale.direccion,Comuna:sale.comuna,'Medio de pago':sale.medioPago,Detalle:sale.items.map(i=>i.name).join(' | '),Subtotal:sale.subtotal,Delivery:sale.delivery,'Descuento Delivery':sale.descuento,Total:sale.total,'Costo Estimado':estimateInternalCost(sale),'Margen Estimado':sale.total-estimateInternalCost(sale),Observaciones:sale.observaciones||''}));const ws=XLSX.utils.json_to_sheet(rows),wb=XLSX.utils.book_new();XLSX.utils.book_append_sheet(wb,ws,'Ventas');XLSX.writeFile(wb,`Cierre_Ramen_y_Fuego_${new Date().toISOString().slice(0,10)}.xlsx`)}
   </script>
 </body>
 </html>
