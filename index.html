@@ -50,6 +50,31 @@
     .btn-ok{background:var(--ok); color:#fff}.btn-danger{background:var(--danger); color:#fff}.btn-outline{background:transparent; color:#fff; border:1px solid #5b4334}
     button.btn:hover{transform:translateY(-1px); opacity:.96}.summary{background:linear-gradient(180deg, rgba(255,106,0,.08), rgba(255,255,255,.01))}
     .summary-list{margin:0; padding-left:18px}.summary-list li{margin-bottom:8px}
+    .stock-mini{
+      position:relative;
+      float:right;
+      max-width:260px;
+      margin:0 0 10px 10px;
+      padding:9px 10px;
+      border:1px solid rgba(255,255,255,.08);
+      border-radius:14px;
+      background:rgba(255,255,255,.035);
+      color:var(--muted);
+      font-size:11px;
+      line-height:1.45;
+    }
+    .stock-mini strong{color:#fff}
+    .stock-mini-title{
+      color:var(--accent2);
+      font-weight:bold;
+      font-size:11px;
+      text-transform:uppercase;
+      letter-spacing:.4px;
+      margin-bottom:4px;
+    }
+    @media(max-width:700px){
+      .stock-mini{float:none;max-width:none;margin:0 0 12px 0}
+    }
     .line{display:flex; justify-content:space-between; gap:12px; padding:7px 0; border-bottom:1px dashed rgba(255,255,255,.08); color:var(--muted)}
     .line strong{color:#fff}.line.total{font-size:1.2rem; font-weight:bold; color:#fff; border-bottom:none; margin-top:8px}
     .badge{display:inline-block; padding:5px 10px; border-radius:999px; font-size:12px; font-weight:bold}
@@ -109,10 +134,18 @@
           <div class="actions"><label style="display:flex; align-items:center; gap:8px; margin:0;"><input type="checkbox" id="promoDelivery" style="width:auto;" onchange="updateSummary()"><span>Activar promo delivery 50% sobre $20.000</span></label></div>
         </div>
         <div class="card summary">
-          <h3>Resumen del pedido</h3><ul id="pedidoLista" class="summary-list"></ul>
-          <div class="line"><span>Stock pollo restante</span><strong id="stockPolloTxt"></strong></div>
-          <div class="line"><span>Stock cerdo restante</span><strong id="stockCerdoTxt"></strong></div>
-          <div class="line"><span>Stock vegetariano restante</span><strong id="stockVegetarianoTxt"></strong></div>
+          <h3>Resumen del pedido</h3>
+          <div class="stock-mini">
+            <div class="stock-mini-title">Stock informativo</div>
+            <div>Pollo: <strong id="stockPolloTxt"></strong></div>
+            <div>Cerdo: <strong id="stockCerdoTxt"></strong></div>
+            <div>Veg.: <strong id="stockVegetarianoTxt"></strong></div>
+            <div>Wok pollo: <strong id="stockWokPolloTxt"></strong></div>
+            <div>Wok cerdo: <strong id="stockWokCerdoTxt"></strong></div>
+            <div>Wok mixto: <strong id="stockWokMixtoTxt"></strong></div>
+            <div>Wok veg.: <strong id="stockWokVegetarianoTxt"></strong></div>
+          </div>
+          <ul id="pedidoLista" class="summary-list"></ul>
           <div class="line"><span>Subtotal</span><strong id="subtotalTxt">$0</strong></div><div class="line"><span>Delivery</span><strong id="deliveryTxt">$0</strong></div><div class="line"><span>Descuento delivery</span><strong id="descuentoTxt">-$0</strong></div><div class="line total"><span>Total</span><span id="totalTxt">$0</span></div>
           <div class="actions"><button class="btn btn-primary" onclick="finalizarPedido()">Finalizar pedido</button><button class="btn btn-secondary" onclick="limpiarPedido()">Limpiar pedido</button><button class="btn btn-outline" onclick="reimprimirUltimoTicket()">Reimprimir último ticket</button></div>
         </div>
@@ -154,7 +187,28 @@
 
     <section id="stock" class="section">
       <div class="hero"><h2>Control de stock</h2><p>Edita el stock disponible para pollo, cerdo y vegetariano. Si llega a 0, no permitirá vender ramen.</p></div>
-      <div class="card"><div class="grid"><div><label>Stock ramen pollo</label><input id="stockPollo" type="number" min="0"></div><div><label>Stock ramen cerdo</label><input id="stockCerdo" type="number" min="0"></div><div><label>Stock ramen vegetariano</label><input id="stockVegetariano" type="number" min="0"></div></div><div class="actions"><button class="btn btn-primary" onclick="saveStock()">Guardar stock</button><button class="btn btn-secondary" onclick="resetStock()">Restablecer stock base</button></div></div>
+      <div class="card">
+        <h3>Stock ramen</h3>
+        <div class="grid">
+          <div><label>Stock ramen pollo</label><input id="stockPollo" type="number" min="0"></div>
+          <div><label>Stock ramen cerdo</label><input id="stockCerdo" type="number" min="0"></div>
+          <div><label>Stock ramen vegetariano</label><input id="stockVegetariano" type="number" min="0"></div>
+        </div>
+
+        <div class="spacer"></div>
+        <h3>Stock fideos al wok</h3>
+        <div class="grid">
+          <div><label>Stock fideos pollo</label><input id="stockWokPollo" type="number" min="0"></div>
+          <div><label>Stock fideos cerdo</label><input id="stockWokCerdo" type="number" min="0"></div>
+          <div><label>Stock fideos mixto</label><input id="stockWokMixto" type="number" min="0"></div>
+          <div><label>Stock fideos vegetariano</label><input id="stockWokVegetariano" type="number" min="0"></div>
+        </div>
+
+        <div class="actions">
+          <button class="btn btn-primary" onclick="saveStock()">Guardar stock</button>
+          <button class="btn btn-secondary" onclick="resetStock()">Restablecer stock base</button>
+        </div>
+      </div>
     </section>
 
     <section id="precios" class="section">
@@ -169,9 +223,10 @@
   <script>
     const STORAGE_KEYS={stock:'ryf_stock_v7',prices:'ryf_prices_v7',sales:'ryf_sales_v7',folio:'ryf_folio_v7',sessionUser:'ryf_session_user_v7',lastOrder:'ryf_last_order_v7',draft:'ryf_draft_v4',closures:'ryf_closures_v1',lastAccessDate:'ryf_last_access_date_v1'};
     const USERS={"Exequiel":"190309","Ana María":"170783","Angelo":"010783"};
-    const defaultStock={pollo:15,cerdo:15,vegetariano:5};
+    const defaultStock={pollo:15,cerdo:15,vegetariano:5,wokPollo:15,wokCerdo:15,wokMixto:15,wokVegetariano:15};
     const defaultPrices={ramenPollo:5500,ramenCerdo:5500,comboRB:6500,comboRG:7490,comboFull:8990,wokPollo:7000,wokCerdo:7500,wokMixto:8500,wokVegetariano:7000,wokComboPollo:9490,wokComboCerdo:9990,wokComboMixto:10990,wokComboVegetariano:9490,wokBebidaExtra:1000};
     let stock=loadJSON(STORAGE_KEYS.stock,defaultStock),prices=loadJSON(STORAGE_KEYS.prices,defaultPrices),sales=loadJSON(STORAGE_KEYS.sales,[]),currentOrder=[],currentUser="",lastOrder=loadJSON(STORAGE_KEYS.lastOrder,null),printingInProgress=false;
+    stock={...defaultStock,...stock}; prices={...defaultPrices,...prices};
     window.addEventListener("beforeunload",function(e){if(currentOrder.length>0||printingInProgress){e.preventDefault();e.returnValue=""}});
     init();
     function init(){revisarCambioDeDia();fillSettings();updatePriceViews();loadDraft();updateSummary();renderHistory();localStorage.removeItem(STORAGE_KEYS.sessionUser);restoreSession();}
@@ -187,31 +242,33 @@
     function autoSaveDraft(){const draft={cliente:clienteNombre.value,direccion:clienteDireccion.value,comuna:clienteComuna.value,medioPago:medioPago.value,observaciones:observaciones.value,promoDelivery:promoDelivery.checked,items:currentOrder};saveJSON(STORAGE_KEYS.draft,draft)}
     function loadDraft(){const draft=loadJSON(STORAGE_KEYS.draft,null);if(!draft)return;clienteNombre.value=draft.cliente||'';clienteDireccion.value=draft.direccion||'';clienteComuna.value=draft.comuna||'0';medioPago.value=draft.medioPago||'Transferencia';observaciones.value=draft.observaciones||'';promoDelivery.checked=!!draft.promoDelivery;currentOrder=draft.items||[]}
     function showSection(id,btn){document.querySelectorAll('.section').forEach(sec=>sec.classList.remove('active'));document.getElementById(id).classList.add('active');document.querySelectorAll('.tabs button').forEach(b=>b.classList.remove('active'));btn.classList.add('active');if(id==='historial')renderHistory();}
-    function fillSettings(){stockPollo.value=stock.pollo;stockCerdo.value=stock.cerdo;stockVegetariano.value=stock.vegetariano;precioPollo.value=prices.ramenPollo;precioCerdo.value=prices.ramenCerdo;precioComboRB.value=prices.comboRB;precioComboRG.value=prices.comboRG;precioComboFull.value=prices.comboFull;precioWokPollo.value=prices.wokPollo;precioWokCerdo.value=prices.wokCerdo;precioWokMixto.value=prices.wokMixto;precioWokVegetariano.value=prices.wokVegetariano;precioWokComboPollo.value=prices.wokComboPollo;precioWokComboCerdo.value=prices.wokComboCerdo;precioWokComboMixto.value=prices.wokComboMixto;precioWokComboVegetariano.value=prices.wokComboVegetariano;precioWokBebidaExtra.value=prices.wokBebidaExtra;}
+    function fillSettings(){stockPollo.value=stock.pollo;stockCerdo.value=stock.cerdo;stockVegetariano.value=stock.vegetariano;stockWokPollo.value=stock.wokPollo;stockWokCerdo.value=stock.wokCerdo;stockWokMixto.value=stock.wokMixto;stockWokVegetariano.value=stock.wokVegetariano;precioPollo.value=prices.ramenPollo;precioCerdo.value=prices.ramenCerdo;precioComboRB.value=prices.comboRB;precioComboRG.value=prices.comboRG;precioComboFull.value=prices.comboFull;precioWokPollo.value=prices.wokPollo;precioWokCerdo.value=prices.wokCerdo;precioWokMixto.value=prices.wokMixto;precioWokVegetariano.value=prices.wokVegetariano;precioWokComboPollo.value=prices.wokComboPollo;precioWokComboCerdo.value=prices.wokComboCerdo;precioWokComboMixto.value=prices.wokComboMixto;precioWokComboVegetariano.value=prices.wokComboVegetariano;precioWokBebidaExtra.value=prices.wokBebidaExtra;}
     function updatePriceViews(){pricePolloView.textContent=formatCLP(prices.ramenPollo);priceCerdoView.textContent=formatCLP(prices.ramenCerdo);priceVegetarianoView.textContent=formatCLP(prices.ramenPollo);priceComboRBView.textContent=formatCLP(prices.comboRB);priceComboRGView.textContent=formatCLP(prices.comboRG);priceComboFullView.textContent=formatCLP(prices.comboFull);priceWokPolloView.textContent=formatCLP(prices.wokPollo);priceWokCerdoView.textContent=formatCLP(prices.wokCerdo);priceWokMixtoView.textContent=formatCLP(prices.wokMixto);priceWokVegetarianoView.textContent=formatCLP(prices.wokVegetariano);priceWokComboPolloView.textContent=formatCLP(prices.wokComboPollo);priceWokComboCerdoView.textContent=formatCLP(prices.wokComboCerdo);priceWokComboMixtoView.textContent=formatCLP(prices.wokComboMixto);priceWokComboVegetarianoView.textContent=formatCLP(prices.wokComboVegetariano);}
-    function saveStock(){stock.pollo=Math.max(0,parseInt(stockPollo.value||'0',10));stock.cerdo=Math.max(0,parseInt(stockCerdo.value||'0',10));stock.vegetariano=Math.max(0,parseInt(stockVegetariano.value||'0',10));saveJSON(STORAGE_KEYS.stock,stock);fillSettings();updateSummary();alert('Stock guardado')}
-    function resetStock(){stock={pollo:15,cerdo:15,vegetariano:5};saveJSON(STORAGE_KEYS.stock,stock);fillSettings();updateSummary();alert('Stock restablecido')}
+    function saveStock(){stock.pollo=Math.max(0,parseInt(stockPollo.value||'0',10));stock.cerdo=Math.max(0,parseInt(stockCerdo.value||'0',10));stock.vegetariano=Math.max(0,parseInt(stockVegetariano.value||'0',10));stock.wokPollo=Math.max(0,parseInt(stockWokPollo.value||'0',10));stock.wokCerdo=Math.max(0,parseInt(stockWokCerdo.value||'0',10));stock.wokMixto=Math.max(0,parseInt(stockWokMixto.value||'0',10));stock.wokVegetariano=Math.max(0,parseInt(stockWokVegetariano.value||'0',10));saveJSON(STORAGE_KEYS.stock,stock);fillSettings();updateSummary();alert('Stock guardado')}
+    function resetStock(){stock={pollo:15,cerdo:15,vegetariano:5,wokPollo:15,wokCerdo:15,wokMixto:15,wokVegetariano:15};saveJSON(STORAGE_KEYS.stock,stock);fillSettings();updateSummary();alert('Stock restablecido')}
     function savePrices(){prices.ramenPollo=Math.max(0,parseInt(precioPollo.value||'0',10));prices.ramenCerdo=Math.max(0,parseInt(precioCerdo.value||'0',10));prices.comboRB=Math.max(0,parseInt(precioComboRB.value||'0',10));prices.comboRG=Math.max(0,parseInt(precioComboRG.value||'0',10));prices.comboFull=Math.max(0,parseInt(precioComboFull.value||'0',10));prices.wokPollo=Math.max(0,parseInt(precioWokPollo.value||'0',10));prices.wokCerdo=Math.max(0,parseInt(precioWokCerdo.value||'0',10));prices.wokMixto=Math.max(0,parseInt(precioWokMixto.value||'0',10));prices.wokVegetariano=Math.max(0,parseInt(precioWokVegetariano.value||'0',10));prices.wokComboPollo=Math.max(0,parseInt(precioWokComboPollo.value||'0',10));prices.wokComboCerdo=Math.max(0,parseInt(precioWokComboCerdo.value||'0',10));prices.wokComboMixto=Math.max(0,parseInt(precioWokComboMixto.value||'0',10));prices.wokComboVegetariano=Math.max(0,parseInt(precioWokComboVegetariano.value||'0',10));prices.wokBebidaExtra=Math.max(0,parseInt(precioWokBebidaExtra.value||'0',10));saveJSON(STORAGE_KEYS.prices,prices);updatePriceViews();updateSummary();alert('Precios guardados')}
     function addSimpleRamen(type){if(type==='pollo'&&getRemainingStock('pollo')<=0){alert('No queda stock de ramen pollo');return}if(type==='cerdo'&&getRemainingStock('cerdo')<=0){alert('No queda stock de ramen cerdo');return}if(type==='vegetariano'&&getRemainingStock('vegetariano')<=0){alert('No queda stock de ramen vegetariano');return}currentOrder.push({type:'simple',name:type==='pollo'?'Ramen Pollo':type==='cerdo'?'Ramen Cerdo':'Ramen Vegetariano',ramenType:type,price:prices.ramenPollo});updateSummary();}
     function addComboRB(){const ramenType=comboRB_ramen.value,bebida=comboRB_bebida.value;if(getRemainingStock(ramenType)<=0){alert('No queda stock para ese ramen');return}currentOrder.push({type:'comboRB',name:`Ramen ${capitalize(ramenType)} + ${bebida}`,ramenType,bebida,price:prices.comboRB});updateSummary();}
     function addComboRG(){const ramenType=comboRG_ramen.value,gyoza=comboRG_gyoza.value;if(getRemainingStock(ramenType)<=0){alert('No queda stock para ese ramen');return}currentOrder.push({type:'comboRG',name:`Ramen ${capitalize(ramenType)} + Gyozas ${gyoza}`,ramenType,gyoza,price:prices.comboRG});updateSummary();}
     function addComboFull(){const ramenType=comboFull_ramen.value,bebida=comboFull_bebida.value,gyoza=comboFull_gyoza.value;if(getRemainingStock(ramenType)<=0){alert('No queda stock para ese ramen');return}currentOrder.push({type:'comboFull',name:`Ramen ${capitalize(ramenType)} + ${bebida} + Gyozas ${gyoza}`,ramenType,bebida,gyoza,price:prices.comboFull});updateSummary();}
-    function addWok(type){const map={pollo:['Fideos al Wok Pollo',prices.wokPollo],cerdo:['Fideos al Wok Cerdo',prices.wokCerdo],mixto:['Fideos al Wok Mixto',prices.wokMixto],vegetariano:['Fideos al Wok Vegetariano',prices.wokVegetariano]};currentOrder.push({type:'wok',name:map[type][0],wokType:type,price:map[type][1]});updateSummary();}
-    function addWokCombo(type){const ids={pollo:'wokComboPolloBebida',cerdo:'wokComboCerdoBebida',mixto:'wokComboMixtoBebida',vegetariano:'wokComboVegetarianoBebida'},map={pollo:['Fideos Pollo + Gyozas',prices.wokComboPollo],cerdo:['Fideos Cerdo + Gyozas',prices.wokComboCerdo],mixto:['Fideos Mixto + Gyozas',prices.wokComboMixto],vegetariano:['Fideos Vegetariano + Gyozas',prices.wokComboVegetariano]};let name=map[type][0],price=map[type][1];const chk=document.getElementById(ids[type]);if(chk&&chk.checked){name+=' + Bebida';price+=prices.wokBebidaExtra;chk.checked=false}currentOrder.push({type:'wokCombo',name,wokType:type,price});updateSummary();}
+    function addWok(type){if(getRemainingWokStock(type)<=0){alert('No queda stock para ese fideo al wok');return}const map={pollo:['Fideos al Wok Pollo',prices.wokPollo],cerdo:['Fideos al Wok Cerdo',prices.wokCerdo],mixto:['Fideos al Wok Mixto',prices.wokMixto],vegetariano:['Fideos al Wok Vegetariano',prices.wokVegetariano]};currentOrder.push({type:'wok',name:map[type][0],wokType:type,price:map[type][1]});updateSummary();}
+    function addWokCombo(type){if(getRemainingWokStock(type)<=0){alert('No queda stock para ese fideo al wok');return}const ids={pollo:'wokComboPolloBebida',cerdo:'wokComboCerdoBebida',mixto:'wokComboMixtoBebida',vegetariano:'wokComboVegetarianoBebida'},map={pollo:['Fideos Pollo + Gyozas',prices.wokComboPollo],cerdo:['Fideos Cerdo + Gyozas',prices.wokComboCerdo],mixto:['Fideos Mixto + Gyozas',prices.wokComboMixto],vegetariano:['Fideos Vegetariano + Gyozas',prices.wokComboVegetariano]};let name=map[type][0],price=map[type][1];const chk=document.getElementById(ids[type]);if(chk&&chk.checked){name+=' + Bebida';price+=prices.wokBebidaExtra;chk.checked=false}currentOrder.push({type:'wokCombo',name,wokType:type,price});updateSummary();}
     function addExtra(nombre,precio){currentOrder.push({type:'extra',name:nombre,price:precio});updateSummary();}
     function getReservedCount(type){return currentOrder.filter(item=>item.ramenType===type).length}
     function getRemainingStock(type){if(type==='pollo')return stock.pollo-getReservedCount(type);if(type==='cerdo')return stock.cerdo-getReservedCount(type);if(type==='vegetariano')return stock.vegetariano-getReservedCount(type);return 0}
+    function getWokReservedCount(type){return currentOrder.filter(item=>item.wokType===type).length}
+    function getRemainingWokStock(type){if(type==='pollo')return stock.wokPollo-getWokReservedCount(type);if(type==='cerdo')return stock.wokCerdo-getWokReservedCount(type);if(type==='mixto')return stock.wokMixto-getWokReservedCount(type);if(type==='vegetariano')return stock.wokVegetariano-getWokReservedCount(type);return 0}
     function getSubtotal(){return currentOrder.reduce((sum,item)=>sum+item.price,0)}
     function getDelivery(){return parseInt(clienteComuna.value||'0',10)}
     function getDiscount(){const promo=promoDelivery.checked,subtotal=getSubtotal(),delivery=getDelivery();if(delivery===0)return 0;if(promo&&subtotal>=20000)return Math.round(delivery*.5);return 0}
     function getTotal(){return getSubtotal()+getDelivery()-getDiscount()}
     function removeItem(index){currentOrder.splice(index,1);updateSummary()}
     function limpiarPedido(){currentOrder=[];autoSaveDraft();updateSummary()}
-    function updateSummary(){pedidoLista.innerHTML='';if(currentUser)atendidoPorView.value=currentUser;if(!currentOrder.length){pedidoLista.innerHTML='<li class="muted">Aún no hay productos agregados.</li>'}else{currentOrder.forEach((item,index)=>{const li=document.createElement('li');li.innerHTML=`${item.name} — $${formatCLP(item.price)} <button class="btn btn-secondary" style="padding:4px 8px; margin-left:6px;" onclick="removeItem(${index})">Quitar</button>`;pedidoLista.appendChild(li);})}subtotalTxt.textContent='$'+formatCLP(getSubtotal());const deliveryValue=getDelivery();deliveryTxt.textContent=deliveryValue===0?'Retiro':'$'+formatCLP(deliveryValue);descuentoTxt.textContent='-$'+formatCLP(getDiscount());totalTxt.textContent='$'+formatCLP(getTotal());stockPolloTxt.innerHTML=stockBadge(getRemainingStock('pollo'));stockCerdoTxt.innerHTML=stockBadge(getRemainingStock('cerdo'));stockVegetarianoTxt.innerHTML=stockBadge(getRemainingStock('vegetariano'));autoSaveDraft();}
+    function updateSummary(){pedidoLista.innerHTML='';if(currentUser)atendidoPorView.value=currentUser;if(!currentOrder.length){pedidoLista.innerHTML='<li class="muted">Aún no hay productos agregados.</li>'}else{currentOrder.forEach((item,index)=>{const li=document.createElement('li');li.innerHTML=`${item.name} — $${formatCLP(item.price)} <button class="btn btn-secondary" style="padding:4px 8px; margin-left:6px;" onclick="removeItem(${index})">Quitar</button>`;pedidoLista.appendChild(li);})}subtotalTxt.textContent='$'+formatCLP(getSubtotal());const deliveryValue=getDelivery();deliveryTxt.textContent=deliveryValue===0?'Retiro':'$'+formatCLP(deliveryValue);descuentoTxt.textContent='-$'+formatCLP(getDiscount());totalTxt.textContent='$'+formatCLP(getTotal());stockPolloTxt.innerHTML=stockBadge(getRemainingStock('pollo'));stockCerdoTxt.innerHTML=stockBadge(getRemainingStock('cerdo'));stockVegetarianoTxt.innerHTML=stockBadge(getRemainingStock('vegetariano'));stockWokPolloTxt.innerHTML=stockBadge(getRemainingWokStock('pollo'));stockWokCerdoTxt.innerHTML=stockBadge(getRemainingWokStock('cerdo'));stockWokMixtoTxt.innerHTML=stockBadge(getRemainingWokStock('mixto'));stockWokVegetarianoTxt.innerHTML=stockBadge(getRemainingWokStock('vegetariano'));autoSaveDraft();}
     function stockBadge(value){if(value<=0)return'<span class="badge out">Sin stock</span>';if(value<=3)return`<span class="badge warn">Quedan ${value}</span>`;return`<span class="badge ok">Quedan ${value}</span>`}
     function validateOrder(){const nombre=clienteNombre.value.trim(),direccion=clienteDireccion.value.trim();if(!currentUser){alert('Debes iniciar sesión');return false}if(!nombre){alert('Ingresa el nombre del cliente');return false}if(!direccion){alert('Ingresa la dirección');return false}if(!currentOrder.length){alert('Agrega al menos un producto');return false}return true}
     async function finalizarPedido(){if(printingInProgress){alert('Espera, el ticket se está imprimiendo...');return}if(!validateOrder())return;const comuna=clienteComuna.options[clienteComuna.selectedIndex].text,order={folio:nextFolio(),fecha:new Date().toLocaleDateString('es-CL'),hora:new Date().toLocaleTimeString('es-CL',{hour:'2-digit',minute:'2-digit'}),cliente:clienteNombre.value.trim(),direccion:clienteDireccion.value.trim(),comuna,atendidoPor:currentUser,medioPago:medioPago.value,observaciones:observaciones.value.trim(),items:[...currentOrder],subtotal:getSubtotal(),delivery:getDelivery(),descuento:getDiscount(),total:getTotal()};descontarStock(order);sales.push(order);saveJSON(STORAGE_KEYS.sales,sales);saveJSON(STORAGE_KEYS.stock,stock);saveJSON(STORAGE_KEYS.lastOrder,order);lastOrder=order;fillSettings();await generateAndPrintTickets(order);currentOrder=[];clienteNombre.value='';clienteDireccion.value='';observaciones.value='';promoDelivery.checked=false;localStorage.removeItem(STORAGE_KEYS.draft);updateSummary();renderHistory();alert(`Pedido ${order.folio} generado`);}
-    function descontarStock(order){order.items.forEach(item=>{if(item.ramenType==='pollo')stock.pollo=Math.max(0,stock.pollo-1);if(item.ramenType==='cerdo')stock.cerdo=Math.max(0,stock.cerdo-1);if(item.ramenType==='vegetariano')stock.vegetariano=Math.max(0,stock.vegetariano-1);});}
+    function descontarStock(order){order.items.forEach(item=>{if(item.ramenType==='pollo')stock.pollo=Math.max(0,stock.pollo-1);if(item.ramenType==='cerdo')stock.cerdo=Math.max(0,stock.cerdo-1);if(item.ramenType==='vegetariano')stock.vegetariano=Math.max(0,stock.vegetariano-1);if(item.wokType==='pollo')stock.wokPollo=Math.max(0,stock.wokPollo-1);if(item.wokType==='cerdo')stock.wokCerdo=Math.max(0,stock.wokCerdo-1);if(item.wokType==='mixto')stock.wokMixto=Math.max(0,stock.wokMixto-1);if(item.wokType==='vegetariano')stock.wokVegetariano=Math.max(0,stock.wokVegetariano-1);});}
     function nextFolio(){const n=parseInt(localStorage.getItem(STORAGE_KEYS.folio)||'0',10)+1;localStorage.setItem(STORAGE_KEYS.folio,String(n));return String(n).padStart(5,'0')}
     function formatCLP(value){return Number(value||0).toLocaleString('es-CL')}
     function capitalize(text){return text.charAt(0).toUpperCase()+text.slice(1)}
