@@ -96,6 +96,17 @@
 
   <div class="container">
     <section id="pedidos" class="section active">
+      <div class="stock-corner" id="stockCornerPanel">
+        <div class="stock-corner-title">Stock informativo</div>
+        <div>Ramen pollo: <strong id="stockPolloTxt"></strong></div>
+        <div>Ramen cerdo: <strong id="stockCerdoTxt"></strong></div>
+        <div>Ramen veg.: <strong id="stockVegetarianoTxt"></strong></div>
+        <div>Wok pollo: <strong id="stockWokPolloTxt"></strong></div>
+        <div>Wok cerdo: <strong id="stockWokCerdoTxt"></strong></div>
+        <div>Wok mixto: <strong id="stockWokMixtoTxt"></strong></div>
+        <div>Wok veg.: <strong id="stockWokVegetarianoTxt"></strong></div>
+      </div>
+
       <div class="hero"><h2>Panel de pedidos</h2><p>Arma el pedido, calcula delivery, aplica promo y genera dos tickets con impresión.</p></div>
       <div class="grid">
         <div class="card">
@@ -109,18 +120,7 @@
           <div class="actions"><label style="display:flex; align-items:center; gap:8px; margin:0;"><input type="checkbox" id="promoDelivery" style="width:auto;" onchange="updateSummary()"><span>Activar promo delivery 50% sobre $20.000</span></label></div>
         </div>
         <div class="card summary">
-          <h3>Resumen del pedido</h3>
-          <div class="stock-corner">
-            <div class="stock-corner-title">Stock informativo</div>
-            <div>Ramen pollo: <strong id="stockPolloTxt"></strong></div>
-            <div>Ramen cerdo: <strong id="stockCerdoTxt"></strong></div>
-            <div>Ramen veg.: <strong id="stockVegetarianoTxt"></strong></div>
-            <div>Wok pollo: <strong id="stockWokPolloTxt"></strong></div>
-            <div>Wok cerdo: <strong id="stockWokCerdoTxt"></strong></div>
-            <div>Wok mixto: <strong id="stockWokMixtoTxt"></strong></div>
-            <div>Wok veg.: <strong id="stockWokVegetarianoTxt"></strong></div>
-          </div>
-          <ul id="pedidoLista" class="summary-list"></ul>
+          <h3>Resumen del pedido</h3><ul id="pedidoLista" class="summary-list"></ul>
           <div class="line"><span>Subtotal</span><strong id="subtotalTxt">$0</strong></div><div class="line"><span>Delivery</span><strong id="deliveryTxt">$0</strong></div><div class="line"><span>Descuento delivery</span><strong id="descuentoTxt">-$0</strong></div><div class="line total"><span>Total</span><span id="totalTxt">$0</span></div>
           <div class="actions"><button class="btn btn-primary" onclick="finalizarPedido()">Finalizar pedido</button><button class="btn btn-secondary" onclick="limpiarPedido()">Limpiar pedido</button><button class="btn btn-outline" onclick="reimprimirUltimoTicket()">Reimprimir último ticket</button></div>
         </div>
