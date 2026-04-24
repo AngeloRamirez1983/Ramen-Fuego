@@ -50,31 +50,6 @@
     .btn-ok{background:var(--ok); color:#fff}.btn-danger{background:var(--danger); color:#fff}.btn-outline{background:transparent; color:#fff; border:1px solid #5b4334}
     button.btn:hover{transform:translateY(-1px); opacity:.96}.summary{background:linear-gradient(180deg, rgba(255,106,0,.08), rgba(255,255,255,.01))}
     .summary-list{margin:0; padding-left:18px}.summary-list li{margin-bottom:8px}
-    .stock-mini{
-      position:relative;
-      float:right;
-      max-width:260px;
-      margin:0 0 10px 10px;
-      padding:9px 10px;
-      border:1px solid rgba(255,255,255,.08);
-      border-radius:14px;
-      background:rgba(255,255,255,.035);
-      color:var(--muted);
-      font-size:11px;
-      line-height:1.45;
-    }
-    .stock-mini strong{color:#fff}
-    .stock-mini-title{
-      color:var(--accent2);
-      font-weight:bold;
-      font-size:11px;
-      text-transform:uppercase;
-      letter-spacing:.4px;
-      margin-bottom:4px;
-    }
-    @media(max-width:700px){
-      .stock-mini{float:none;max-width:none;margin:0 0 12px 0}
-    }
     .line{display:flex; justify-content:space-between; gap:12px; padding:7px 0; border-bottom:1px dashed rgba(255,255,255,.08); color:var(--muted)}
     .line strong{color:#fff}.line.total{font-size:1.2rem; font-weight:bold; color:#fff; border-bottom:none; margin-top:8px}
     .badge{display:inline-block; padding:5px 10px; border-radius:999px; font-size:12px; font-weight:bold}
@@ -96,7 +71,7 @@
       <img src="logo.png" alt="Ramen & Fuego">
       <h2>Ingreso</h2><p>Accede con tu usuario para comenzar a vender</p>
       <label>Usuario</label><select id="loginUsuario"><option value="">Selecciona usuario</option><option value="Exequiel">Exequiel</option><option value="Ana María">Ana María</option><option value="Angelo">Angelo</option></select>
-      <label>Password</label><input id="loginPassword" type="password" placeholder="Password">
+      <label>Password</label><input id="loginPassword" type="password" placeholder="Password" onkeydown="loginEnter(event)">
       <div class="actions"><button class="btn btn-primary" onclick="login()">Ingresar</button></div>
       <div id="loginError" class="error-msg"></div>
     </div>
@@ -135,11 +110,11 @@
         </div>
         <div class="card summary">
           <h3>Resumen del pedido</h3>
-          <div class="stock-mini">
-            <div class="stock-mini-title">Stock informativo</div>
-            <div>Pollo: <strong id="stockPolloTxt"></strong></div>
-            <div>Cerdo: <strong id="stockCerdoTxt"></strong></div>
-            <div>Veg.: <strong id="stockVegetarianoTxt"></strong></div>
+          <div class="stock-corner">
+            <div class="stock-corner-title">Stock informativo</div>
+            <div>Ramen pollo: <strong id="stockPolloTxt"></strong></div>
+            <div>Ramen cerdo: <strong id="stockCerdoTxt"></strong></div>
+            <div>Ramen veg.: <strong id="stockVegetarianoTxt"></strong></div>
             <div>Wok pollo: <strong id="stockWokPolloTxt"></strong></div>
             <div>Wok cerdo: <strong id="stockWokCerdoTxt"></strong></div>
             <div>Wok mixto: <strong id="stockWokMixtoTxt"></strong></div>
@@ -196,6 +171,7 @@
         </div>
 
         <div class="spacer"></div>
+
         <h3>Stock fideos al wok</h3>
         <div class="grid">
           <div><label>Stock fideos pollo</label><input id="stockWokPollo" type="number" min="0"></div>
@@ -226,11 +202,19 @@
     const defaultStock={pollo:15,cerdo:15,vegetariano:5,wokPollo:15,wokCerdo:15,wokMixto:15,wokVegetariano:15};
     const defaultPrices={ramenPollo:5500,ramenCerdo:5500,comboRB:6500,comboRG:7490,comboFull:8990,wokPollo:7000,wokCerdo:7500,wokMixto:8500,wokVegetariano:7000,wokComboPollo:9490,wokComboCerdo:9990,wokComboMixto:10990,wokComboVegetariano:9490,wokBebidaExtra:1000};
     let stock=loadJSON(STORAGE_KEYS.stock,defaultStock),prices=loadJSON(STORAGE_KEYS.prices,defaultPrices),sales=loadJSON(STORAGE_KEYS.sales,[]),currentOrder=[],currentUser="",lastOrder=loadJSON(STORAGE_KEYS.lastOrder,null),printingInProgress=false;
-    stock={...defaultStock,...stock}; prices={...defaultPrices,...prices};
+    stock = {...defaultStock, ...stock};
+    prices = {...defaultPrices, ...prices};
     window.addEventListener("beforeunload",function(e){if(currentOrder.length>0||printingInProgress){e.preventDefault();e.returnValue=""}});
     init();
     function init(){revisarCambioDeDia();fillSettings();updatePriceViews();loadDraft();updateSummary();renderHistory();localStorage.removeItem(STORAGE_KEYS.sessionUser);restoreSession();}
     function restoreSession(){if(currentUser){loginOverlay.classList.add('hidden');usuarioActivoHeader.textContent=currentUser;atendidoPorView.value=currentUser}else{loginOverlay.classList.remove('hidden');usuarioActivoHeader.textContent='—';atendidoPorView.value=''}}
+    function loginEnter(event){
+      if(event.key === 'Enter'){
+        event.preventDefault();
+        login();
+      }
+    }
+
     function login(){const user=loginUsuario.value,pass=loginPassword.value,error=loginError;if(!user||!pass){error.textContent='Ingresa usuario y password.';return}if(USERS[user]!==pass){error.textContent='Credenciales incorrectas.';return}currentUser=user;usuarioActivoHeader.textContent=currentUser;atendidoPorView.value=currentUser;loginOverlay.classList.add('hidden');loginPassword.value='';error.textContent='';autoSaveDraft();}
     function cerrarSesion(){generarCierreAutomaticoDelDia();currentUser="";localStorage.removeItem(STORAGE_KEYS.sessionUser);usuarioActivoHeader.textContent='—';atendidoPorView.value='';loginUsuario.value='';loginPassword.value='';loginOverlay.classList.remove('hidden');}
     function loadJSON(key,fallback){try{const raw=localStorage.getItem(key);return raw?JSON.parse(raw):fallback}catch{return fallback}}
@@ -251,13 +235,23 @@
     function addComboRB(){const ramenType=comboRB_ramen.value,bebida=comboRB_bebida.value;if(getRemainingStock(ramenType)<=0){alert('No queda stock para ese ramen');return}currentOrder.push({type:'comboRB',name:`Ramen ${capitalize(ramenType)} + ${bebida}`,ramenType,bebida,price:prices.comboRB});updateSummary();}
     function addComboRG(){const ramenType=comboRG_ramen.value,gyoza=comboRG_gyoza.value;if(getRemainingStock(ramenType)<=0){alert('No queda stock para ese ramen');return}currentOrder.push({type:'comboRG',name:`Ramen ${capitalize(ramenType)} + Gyozas ${gyoza}`,ramenType,gyoza,price:prices.comboRG});updateSummary();}
     function addComboFull(){const ramenType=comboFull_ramen.value,bebida=comboFull_bebida.value,gyoza=comboFull_gyoza.value;if(getRemainingStock(ramenType)<=0){alert('No queda stock para ese ramen');return}currentOrder.push({type:'comboFull',name:`Ramen ${capitalize(ramenType)} + ${bebida} + Gyozas ${gyoza}`,ramenType,bebida,gyoza,price:prices.comboFull});updateSummary();}
-    function addWok(type){if(getRemainingWokStock(type)<=0){alert('No queda stock para ese fideo al wok');return}const map={pollo:['Fideos al Wok Pollo',prices.wokPollo],cerdo:['Fideos al Wok Cerdo',prices.wokCerdo],mixto:['Fideos al Wok Mixto',prices.wokMixto],vegetariano:['Fideos al Wok Vegetariano',prices.wokVegetariano]};currentOrder.push({type:'wok',name:map[type][0],wokType:type,price:map[type][1]});updateSummary();}
-    function addWokCombo(type){if(getRemainingWokStock(type)<=0){alert('No queda stock para ese fideo al wok');return}const ids={pollo:'wokComboPolloBebida',cerdo:'wokComboCerdoBebida',mixto:'wokComboMixtoBebida',vegetariano:'wokComboVegetarianoBebida'},map={pollo:['Fideos Pollo + Gyozas',prices.wokComboPollo],cerdo:['Fideos Cerdo + Gyozas',prices.wokComboCerdo],mixto:['Fideos Mixto + Gyozas',prices.wokComboMixto],vegetariano:['Fideos Vegetariano + Gyozas',prices.wokComboVegetariano]};let name=map[type][0],price=map[type][1];const chk=document.getElementById(ids[type]);if(chk&&chk.checked){name+=' + Bebida';price+=prices.wokBebidaExtra;chk.checked=false}currentOrder.push({type:'wokCombo',name,wokType:type,price});updateSummary();}
+    function addWok(type){if(getRemainingWokStock(type)<=0){alert('No queda stock para ese fideo al wok');return;}const map={pollo:['Fideos al Wok Pollo',prices.wokPollo],cerdo:['Fideos al Wok Cerdo',prices.wokCerdo],mixto:['Fideos al Wok Mixto',prices.wokMixto],vegetariano:['Fideos al Wok Vegetariano',prices.wokVegetariano]};currentOrder.push({type:'wok',name:map[type][0],wokType:type,price:map[type][1]});updateSummary();}
+    function addWokCombo(type){if(getRemainingWokStock(type)<=0){alert('No queda stock para ese fideo al wok');return;}const ids={pollo:'wokComboPolloBebida',cerdo:'wokComboCerdoBebida',mixto:'wokComboMixtoBebida',vegetariano:'wokComboVegetarianoBebida'},map={pollo:['Fideos Pollo + Gyozas',prices.wokComboPollo],cerdo:['Fideos Cerdo + Gyozas',prices.wokComboCerdo],mixto:['Fideos Mixto + Gyozas',prices.wokComboMixto],vegetariano:['Fideos Vegetariano + Gyozas',prices.wokComboVegetariano]};let name=map[type][0],price=map[type][1];const chk=document.getElementById(ids[type]);if(chk&&chk.checked){name+=' + Bebida';price+=prices.wokBebidaExtra;chk.checked=false}currentOrder.push({type:'wokCombo',name,wokType:type,price});updateSummary();}
     function addExtra(nombre,precio){currentOrder.push({type:'extra',name:nombre,price:precio});updateSummary();}
     function getReservedCount(type){return currentOrder.filter(item=>item.ramenType===type).length}
     function getRemainingStock(type){if(type==='pollo')return stock.pollo-getReservedCount(type);if(type==='cerdo')return stock.cerdo-getReservedCount(type);if(type==='vegetariano')return stock.vegetariano-getReservedCount(type);return 0}
-    function getWokReservedCount(type){return currentOrder.filter(item=>item.wokType===type).length}
-    function getRemainingWokStock(type){if(type==='pollo')return stock.wokPollo-getWokReservedCount(type);if(type==='cerdo')return stock.wokCerdo-getWokReservedCount(type);if(type==='mixto')return stock.wokMixto-getWokReservedCount(type);if(type==='vegetariano')return stock.wokVegetariano-getWokReservedCount(type);return 0}
+
+    function getWokReservedCount(type){
+      return currentOrder.filter(item => item.wokType === type).length;
+    }
+
+    function getRemainingWokStock(type){
+      if(type === 'pollo') return stock.wokPollo - getWokReservedCount(type);
+      if(type === 'cerdo') return stock.wokCerdo - getWokReservedCount(type);
+      if(type === 'mixto') return stock.wokMixto - getWokReservedCount(type);
+      if(type === 'vegetariano') return stock.wokVegetariano - getWokReservedCount(type);
+      return 0;
+    }
     function getSubtotal(){return currentOrder.reduce((sum,item)=>sum+item.price,0)}
     function getDelivery(){return parseInt(clienteComuna.value||'0',10)}
     function getDiscount(){const promo=promoDelivery.checked,subtotal=getSubtotal(),delivery=getDelivery();if(delivery===0)return 0;if(promo&&subtotal>=20000)return Math.round(delivery*.5);return 0}
