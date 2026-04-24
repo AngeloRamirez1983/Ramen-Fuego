@@ -47,7 +47,7 @@
     .actions{display:flex; gap:10px; flex-wrap:wrap; margin-top:12px}
     button.btn{border:none; padding:11px 14px; border-radius:12px; cursor:pointer; font-weight:bold; transition:.2s ease}
     .btn-primary{background:linear-gradient(90deg,var(--accent),var(--accent3)); color:#fff}.btn-secondary{background:#2a1f19; color:#fff; border:1px solid #413028}
-    .btn-ok{background:var(--ok); color:#fff}.btn-danger{background:var(--danger); color:#fff}.btn-outline{background:transparent; color:#fff; border:1px solid #5b4334}
+    .btn-ok{background:var(--ok); color:#fff}.btn-danger{background:var(--danger); color:#fff; box-shadow:0 0 0 2px rgba(255,77,79,.18)}.btn-outline{background:transparent; color:#fff; border:1px solid #5b4334}
     button.btn:hover{transform:translateY(-1px); opacity:.96}.summary{background:linear-gradient(180deg, rgba(255,106,0,.08), rgba(255,255,255,.01))}
     .summary-list{margin:0; padding-left:18px}.summary-list li{margin-bottom:8px}
     .line{display:flex; justify-content:space-between; gap:12px; padding:7px 0; border-bottom:1px dashed rgba(255,255,255,.08); color:var(--muted)}
@@ -274,7 +274,11 @@
     </section>
 
     <section id="historial" class="section"><div class="hero"><h2>Historial de ventas</h2><p>Revisa los pedidos guardados en este dispositivo y reimprime si hace falta.</p></div><div class="card"><div id="historialContenido"></div></div></section>
-    <section id="cierre" class="section"><div class="hero"><h2>Cierre de día</h2><p>Obtén resumen de ventas y exporta el Excel con costo y margen estimado.</p></div><div class="card"><div class="actions"><button class="btn btn-primary" onclick="mostrarResumenCierre()">Ver resumen</button><button class="btn btn-secondary" onclick="renderUltimosCierres()">Ver cierre automático</button><button class="btn btn-ok" onclick="exportExcel()">Exportar Excel</button></div><div class="spacer"></div><div id="resumenCierre"></div></div></section>
+    <section id="cierre" class="section"><div class="hero"><h2>Cierre de día</h2><p>Revisa el resumen en vivo o realiza el cierre final del día. Al cerrar, se descargan Excel y PDF, se guarda el cierre, se limpian las ventas del día y se restablece el stock.</p></div><div class="card"><div class="actions">
+          <button class="btn btn-primary" onclick="mostrarResumenCierre()">Resumen en vivo</button>
+          <button class="btn btn-danger" onclick="cierreDeDia()">🔒 Cerrar Día</button>
+          <button class="btn btn-outline" onclick="exportExcel()">Exportar Excel sin cerrar</button>
+        </div><div class="spacer"></div><div id="resumenCierre"></div></div></section>
   </div>
 
   <script>
@@ -365,7 +369,211 @@
     function renderHistory(){const cont=historialContenido;if(!sales.length){cont.innerHTML='<p class="muted">Aún no hay ventas registradas.</p>';return}let html=`<table><thead><tr><th>Folio</th><th>Fecha</th><th>Cliente</th><th>Atendido por</th><th>Total</th><th>Acción</th></tr></thead><tbody>`;[...sales].reverse().forEach((sale,reversedIndex)=>{const realIndex=sales.length-1-reversedIndex;html+=`<tr><td>${sale.folio}</td><td>${sale.fecha} ${sale.hora}</td><td>${sale.cliente}</td><td>${sale.atendidoPor}</td><td>$${formatCLP(sale.total)}</td><td><button class="btn btn-secondary" onclick="reimprimirDesdeHistorial(${realIndex})">Reimprimir</button></td></tr>`});html+='</tbody></table>';cont.innerHTML=html}
     function mostrarResumenCierre(){const cont=resumenCierre;if(!sales.length){cont.innerHTML='<p class="muted">No hay ventas registradas.</p>';return}const totalVentas=sales.reduce((a,b)=>a+b.total,0),totalDelivery=sales.reduce((a,b)=>a+b.delivery,0),totalDescuentos=sales.reduce((a,b)=>a+b.descuento,0),costoEstimado=sales.reduce((sum,sale)=>sum+estimateInternalCost(sale),0),margen=totalVentas-costoEstimado;cont.innerHTML=`<div class="card soft"><div class="line"><span>Pedidos</span><strong>${sales.length}</strong></div><div class="line"><span>Ventas totales</span><strong>$${formatCLP(totalVentas)}</strong></div><div class="line"><span>Delivery bruto</span><strong>$${formatCLP(totalDelivery)}</strong></div><div class="line"><span>Descuentos delivery</span><strong>-$${formatCLP(totalDescuentos)}</strong></div><div class="line"><span>Costo estimado</span><strong>$${formatCLP(costoEstimado)}</strong></div><div class="line total"><span>Margen estimado</span><span>$${formatCLP(margen)}</span></div></div>`}
     function renderUltimosCierres(){const closures=loadJSON(STORAGE_KEYS.closures,[]),cont=resumenCierre;if(!closures.length){cont.innerHTML='<p class="muted">No hay cierres automáticos guardados aún.</p>';return}const ultimo=closures[closures.length-1];cont.innerHTML=`<div class="card soft"><div class="line"><span>Fecha cierre</span><strong>${ultimo.fechaISO}</strong></div><div class="line"><span>Pedidos</span><strong>${ultimo.pedidos}</strong></div><div class="line"><span>Ventas totales</span><strong>$${formatCLP(ultimo.totalVentas)}</strong></div><div class="line"><span>Delivery bruto</span><strong>$${formatCLP(ultimo.totalDelivery)}</strong></div><div class="line"><span>Descuentos delivery</span><strong>-$${formatCLP(ultimo.totalDescuentos)}</strong></div><div class="line"><span>Costo estimado</span><strong>$${formatCLP(ultimo.costoEstimado)}</strong></div><div class="line total"><span>Margen estimado</span><span>$${formatCLP(ultimo.margen)}</span></div></div>`}
-    function exportExcel(){if(!sales.length){alert('No hay ventas para exportar');return}const rows=sales.map(sale=>({Folio:sale.folio,Fecha:sale.fecha,Hora:sale.hora,'Atendido por':sale.atendidoPor,Cliente:sale.cliente,Dirección:sale.direccion,Comuna:sale.comuna,'Medio de pago':sale.medioPago,Detalle:sale.items.map(i=>i.name).join(' | '),Subtotal:sale.subtotal,Delivery:sale.delivery,'Descuento Delivery':sale.descuento,Total:sale.total,'Costo Estimado':estimateInternalCost(sale),'Margen Estimado':sale.total-estimateInternalCost(sale),Observaciones:sale.observaciones||''}));const ws=XLSX.utils.json_to_sheet(rows),wb=XLSX.utils.book_new();XLSX.utils.book_append_sheet(wb,ws,'Ventas');XLSX.writeFile(wb,`Cierre_Ramen_y_Fuego_${new Date().toISOString().slice(0,10)}.xlsx`)}
+    
+    function getVentasDelDia(){
+      const hoy = hoyISO();
+      return sales.filter(sale => fechaCLAISO(sale.fecha) === hoy);
+    }
+
+    function buildCierreRows(ventas){
+      return ventas.map(sale => ({
+        Folio: sale.folio,
+        Fecha: sale.fecha,
+        Hora: sale.hora,
+        'Atendido por': sale.atendidoPor,
+        Cliente: sale.cliente,
+        Dirección: sale.direccion,
+        Comuna: sale.comuna,
+        'Medio de pago': sale.medioPago,
+        Detalle: sale.items.map(i => i.name).join(' | '),
+        Subtotal: sale.subtotal,
+        Delivery: sale.delivery,
+        'Descuento Delivery': sale.descuento,
+        Total: sale.total,
+        'Costo Estimado': estimateInternalCost(sale),
+        'Margen Estimado': sale.total - estimateInternalCost(sale),
+        Observaciones: sale.observaciones || ''
+      }));
+    }
+
+    function getCierreStats(ventas){
+      const totalVentas = ventas.reduce((a,b)=>a+b.total,0);
+      const totalDelivery = ventas.reduce((a,b)=>a+b.delivery,0);
+      const totalDescuentos = ventas.reduce((a,b)=>a+b.descuento,0);
+      const costoEstimado = ventas.reduce((sum, sale) => sum + estimateInternalCost(sale), 0);
+      const margen = totalVentas - costoEstimado;
+
+      return {
+        pedidos: ventas.length,
+        totalVentas,
+        totalDelivery,
+        totalDescuentos,
+        costoEstimado,
+        margen
+      };
+    }
+
+    function resetStockBase(){
+      stock = {...defaultStock};
+      saveJSON(STORAGE_KEYS.stock, stock);
+      fillSettings();
+      updateSummary();
+    }
+
+    function downloadExcelCierre(ventas, fechaLabel){
+      const rows = buildCierreRows(ventas);
+      const stats = getCierreStats(ventas);
+
+      rows.push({});
+      rows.push({
+        Folio: 'RESUMEN',
+        Total: stats.totalVentas,
+        'Costo Estimado': stats.costoEstimado,
+        'Margen Estimado': stats.margen,
+        Delivery: stats.totalDelivery,
+        'Descuento Delivery': stats.totalDescuentos,
+        Detalle: `Pedidos: ${stats.pedidos}`
+      });
+
+      const ws = XLSX.utils.json_to_sheet(rows);
+      const wb = XLSX.utils.book_new();
+      XLSX.utils.book_append_sheet(wb, ws, 'Cierre');
+      XLSX.writeFile(wb, `Cierre_Ramen_y_Fuego_${fechaLabel}.xlsx`);
+    }
+
+    function downloadPdfCierre(ventas, fechaLabel){
+      const { jsPDF } = window.jspdf;
+      const doc = new jsPDF({
+        orientation: 'portrait',
+        unit: 'mm',
+        format: 'a4'
+      });
+
+      const stats = getCierreStats(ventas);
+      let y = 14;
+
+      doc.setFontSize(16);
+      doc.setFont(undefined, 'bold');
+      doc.text('RAMEN & FUEGO', 105, y, { align: 'center' });
+      y += 8;
+
+      doc.setFontSize(12);
+      doc.text(`Cierre de Día - ${fechaLabel}`, 105, y, { align: 'center' });
+      y += 10;
+
+      doc.setFontSize(10);
+      doc.setFont(undefined, 'normal');
+      doc.text(`Pedidos: ${stats.pedidos}`, 14, y); y += 6;
+      doc.text(`Ventas totales: $${formatCLP(stats.totalVentas)}`, 14, y); y += 6;
+      doc.text(`Delivery bruto: $${formatCLP(stats.totalDelivery)}`, 14, y); y += 6;
+      doc.text(`Descuentos delivery: -$${formatCLP(stats.totalDescuentos)}`, 14, y); y += 6;
+      doc.text(`Costo estimado: $${formatCLP(stats.costoEstimado)}`, 14, y); y += 6;
+
+      doc.setFont(undefined, 'bold');
+      doc.text(`Margen estimado: $${formatCLP(stats.margen)}`, 14, y); y += 9;
+
+      doc.setFont(undefined, 'bold');
+      doc.text('Detalle de ventas', 14, y); y += 6;
+
+      doc.setFont(undefined, 'normal');
+      doc.setFontSize(8);
+
+      ventas.forEach(sale => {
+        if(y > 275){
+          doc.addPage();
+          y = 14;
+        }
+
+        const detalle = sale.items.map(i => i.name).join(' | ');
+        const lineas = doc.splitTextToSize(
+          `${sale.folio} · ${sale.hora} · ${sale.cliente} · ${sale.medioPago} · $${formatCLP(sale.total)} · ${detalle}`,
+          180
+        );
+
+        doc.text(lineas, 14, y);
+        y += lineas.length * 4 + 2;
+      });
+
+      doc.save(`Cierre_Ramen_y_Fuego_${fechaLabel}.pdf`);
+    }
+
+    function guardarCierreFinal(ventas, fechaISO){
+      const closures = loadJSON(STORAGE_KEYS.closures, []);
+      const stats = getCierreStats(ventas);
+
+      closures.push({
+        fechaISO,
+        pedidos: stats.pedidos,
+        totalVentas: stats.totalVentas,
+        totalDelivery: stats.totalDelivery,
+        totalDescuentos: stats.totalDescuentos,
+        costoEstimado: stats.costoEstimado,
+        margen: stats.margen,
+        creadoEn: new Date().toISOString(),
+        tipo: 'Cierre de Día'
+      });
+
+      saveJSON(STORAGE_KEYS.closures, closures);
+    }
+
+    function cierreDeDia(){
+      if(printingInProgress){
+        alert('Espera, hay una impresión en curso.');
+        return;
+      }
+
+      const ventasDelDia = getVentasDelDia();
+
+      if(!ventasDelDia.length){
+        alert('No hay ventas del día para cerrar.');
+        return;
+      }
+
+      const fechaISO = hoyISO();
+      const confirmar = confirm(
+        `VAS A CERRAR EL DÍA ${fechaISO}.\n\n` +
+        `Se descargará Excel y PDF.\n` +
+        `Se guardará el cierre.\n` +
+        `Se restablecerá el stock base.\n` +
+        `Se limpiarán las ventas del día.\n\n` +
+        `Esta acción debe hacerse solo al final de la jornada.\n\n` +
+        `¿Confirmas el CIERRE DE DÍA?`
+      );
+
+      if(!confirmar) return;
+
+      downloadExcelCierre(ventasDelDia, fechaISO);
+      downloadPdfCierre(ventasDelDia, fechaISO);
+      guardarCierreFinal(ventasDelDia, fechaISO);
+
+      const ventasOtrosDias = sales.filter(sale => fechaCLAISO(sale.fecha) !== fechaISO);
+      sales = ventasOtrosDias;
+      saveJSON(STORAGE_KEYS.sales, sales);
+
+      resetStockBase();
+
+      currentOrder = [];
+      localStorage.removeItem(STORAGE_KEYS.draft);
+      updateSummary();
+      renderHistory();
+      mostrarResumenCierre();
+
+      alert('Cierre de día realizado. Se descargaron Excel y PDF, y el stock fue restablecido.');
+    }
+
+
+    function exportExcel(){
+      if(!sales.length){
+        alert('No hay ventas para exportar');
+        return;
+      }
+
+      const ventasDelDia = getVentasDelDia();
+      const ventasAExportar = ventasDelDia.length ? ventasDelDia : sales;
+      const fechaLabel = hoyISO();
+
+      downloadExcelCierre(ventasAExportar, fechaLabel);
+    }
   </script>
 </body>
 </html>
